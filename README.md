@@ -4,6 +4,6 @@ Per testare:
 
         chmod +x ./autobuild.sh
     
-Altrimenti:
+Eseguire:
 
     ./autobuild.sh
