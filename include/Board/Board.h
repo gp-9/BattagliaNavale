@@ -28,8 +28,8 @@ class BattleShip::Board {
     int currP2Ironclad {};
     int currP2Support {};
     int currP2Submarine {};
-    //std::array<BattleShip::Army, 8> p1Army;
-    //std::array<BattleShip::Army, 8> p2Army;
+    std::array<BattleShip::Army*, 8> p1Army = {nullptr};
+    std::array<BattleShip::Army*, 8> p2Army = {nullptr};
     Board(const BattleShip::Board&) = delete;
     BattleShip::Board& operator=(const BattleShip::Board&) = delete;
     Board() {}

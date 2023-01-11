@@ -21,37 +21,42 @@ bool BattleShip::Board::hitBoard(BattleShip::point_t target,
     return hit;
 }
 
-bool isInBoard(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army) {
-    if(center.xPos < 1 || center.xPos > 12 || center.yPos < 1 || center.yPos > 12) return false;
-    switch(army) {
-        case BattleShip::ironclad:
-            switch(direction) {
-                case BattleShip::north:
-                    if(center.yPos + 2 < 12 && center.yPos - 2 > 0) return true;
-                    break;
-                case BattleShip::south:
-                    if(center.yPos + 2 < 12 && center.yPos - 2 > 0) return true;
-                    break;
-                case BattleShip::east:
-                    if(center.xPos + 2 < 12 && center.xPos - 2 > 0) return true;
-                    break;
-                case BattleShip::west:
-                    if(center.xPos + 2 < 12 && center.xPos - 2 > 0) return true;
-                    break;
-            }
-            break;
-        case BattleShip::support:
-            break;
-        case BattleShip::submarine:
-            break;
-    }
-    return false;
-}
-
 bool BattleShip::Board::checkPosition(const BattleShip::point_t& center, const BattleShip::direction_t& direction,
                 const BattleShip::army_t& army, const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& defencegrid) const {
-    bool isValidPosition = false;
-    return isValidPosition;
+    if((center.xPos > 0 && center.xPos < 13) && (center.yPos > 0 && center.yPos < 13)) {
+        switch(army) {
+            case BattleShip::ironclad:
+                switch(direction) {
+                    case BattleShip::northsouth:
+                        if((center.yPos + 2 < 13 && center.yPos - 2 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos][center.yPos-1] || defencegrid[center.xPos][center.yPos+1] 
+                                    || defencegrid[center.xPos][center.yPos-2] || defencegrid[center.xPos][center.yPos+2])) return true;
+                        break;
+                    case BattleShip::eastwest:
+                        if((center.xPos + 2 < 13 && center.xPos - 2 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos-1][center.yPos] || defencegrid[center.xPos+1][center.yPos] 
+                                    || defencegrid[center.xPos-2][center.yPos] || defencegrid[center.xPos+2][center.yPos])) return true;
+                        break;
+                }
+                break;
+            case BattleShip::support:
+                switch(direction) {
+                    case BattleShip::northsouth:
+                        if((center.yPos + 1 < 13 && center.yPos - 1 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos][center.yPos-1] || defencegrid[center.xPos][center.yPos+1])) return true;
+                        break;
+                    case BattleShip::eastwest:
+                        if((center.xPos + 1 < 13 && center.xPos - 1 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos-1][center.yPos] || defencegrid[center.xPos+1][center.yPos])) return true;
+                        break;
+                }
+                break;
+            case BattleShip::submarine:
+                if(!defencegrid[center.xPos][center.yPos]) return true;
+                break;
+        }
+    }
+    return false;
 }
 
 void addTopBorder(std::stringstream& input) {
