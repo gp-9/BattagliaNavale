@@ -60,7 +60,7 @@ int main (int argc, char *argv[]) {
             } else if(currSupport < 3) {
                 boat = BattleShip::support;
                 output << "Quali sono le coordinate per la nave di supporto " << (currSupport + 1) << '\n' << prompt;
-            } else if(currSubmarine < 3) {
+            } else if(currSubmarine < 2) {
                 boat = BattleShip::submarine;
                 output << "Quali sono le coordinate per il sottomarino " << (currSubmarine + 1) << '\n' << prompt;
             }
@@ -98,7 +98,7 @@ int main (int argc, char *argv[]) {
             }
         }
     } else {
-        output << "Playing game Computer vs Computer\n";
+        std::cout << "Playing game Computer vs Computer\n";
     }
     return 0;
 }
@@ -143,17 +143,19 @@ std::string setupBoard(const std::string& input, BattleShip::Board& board, const
         if((headstr == "X" || headstr == "x") && (tailstr == "X" || tailstr == "x")) {
             output = board.getStringBoard(board.getP1DefenceGrid(), board.getP1AttackGrid()) + '\n';
         } else {
-            if(head.xPos < 0x4d && head.xPos > 0x40) {
-                head.xPos = tokens[0][0] - 0x40;
+            char firstX = tokens[0][0];
+            char secondX = tokens[1][0];
+            if(firstX < 0x4d && firstX > 0x40) {
+                head.xPos = firstX - 0x40;
             }
-            if(head.xPos < 0x6d && head.xPos > 0x60) {
-                head.xPos = tokens[0][0] - 0x60;
+            if(firstX < 0x6d && firstX > 0x60) {
+                head.xPos = firstX - 0x60;
             }
-            if(tail.xPos < 0x4d && tail.xPos > 0x40) {
-                tail.xPos = tokens[1][0] - 0x40;
+            if(secondX < 0x4d && secondX > 0x40) {
+                tail.xPos = secondX - 0x40;
             }
-            if(tail.xPos < 0x6d && tail.xPos > 0x60) {
-                tail.xPos = tokens[1][0] - 0x60;
+            if(secondX < 0x6d && secondX > 0x60) {
+                tail.xPos = secondX - 0x60;
             }
             int yHead = 0;
             int yTail = 0;
@@ -173,12 +175,12 @@ std::string setupBoard(const std::string& input, BattleShip::Board& board, const
                 if(head.xPos == tail.xPos) {
                     shipdir = BattleShip::eastwest;
                     center.xPos = tail.xPos;
-                    center.yPos = tail.yPos + boat;
+                    center.yPos = tail.yPos - boat;
                 }
                 else if(head.yPos == tail.yPos) {
                     shipdir = BattleShip::northsouth;
                     center.yPos = tail.yPos;
-                    center.xPos = tail.xPos + boat;
+                    center.xPos = tail.xPos - boat;
 
                 } else throw std::invalid_argument("Invalid ship direction");
                 try {
@@ -187,7 +189,7 @@ std::string setupBoard(const std::string& input, BattleShip::Board& board, const
                     throw;
                 }
                 std::stringstream s; 
-                s << static_cast<char>(tokens[0][0]) << head.yPos << " " << static_cast<char>(tokens[1][0]) << tail.yPos << '\n';
+                s << static_cast<char>(firstX) << head.yPos << " " << static_cast<char>(secondX) << tail.yPos << '\n';
                 output = s.str();
             } else throw std::invalid_argument("Invalid coordinates");
         }

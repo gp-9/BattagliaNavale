@@ -1,3 +1,4 @@
+#include <iostream>
 #include <sstream>
 #include "../../include/Board/Board.h"
 #include "../../include/Army/Ironclad/Ironclad.h"
@@ -27,22 +28,22 @@ void BattleShip::Board::drawShip(const BattleShip::point_t& center, const Battle
         case BattleShip::ironclad:
             if(direction == BattleShip::northsouth) {
                 for(int i=-2; i < 3; i++) {
-                    p1DefenceGrid[center.xPos][center.yPos-1+i] = IRONCLADUNIT;
+                    p1DefenceGrid[center.xPos-1+i][center.yPos-1] = IRONCLADUNIT;
                 }
             } else {
                 for(int i=-2; i < 3; i++) {
-                    p1DefenceGrid[center.xPos-1+i][center.yPos] = IRONCLADUNIT;
+                    p1DefenceGrid[center.xPos-1][center.yPos-1+i] = IRONCLADUNIT;
                 }
             }
             break;
         case BattleShip::support:
             if(direction == BattleShip::northsouth) {
                 for(int i=-1; i < 2; i++) {
-                    p1DefenceGrid[center.xPos][center.yPos-1+i] = SUPPORTUNIT;
+                    p1DefenceGrid[center.xPos-1+i][center.yPos-1] = SUPPORTUNIT;
                 }
             } else {
                 for(int i=-1; i < 2; i++) {
-                    p1DefenceGrid[center.xPos-1+i][center.yPos] = IRONCLADUNIT;
+                    p1DefenceGrid[center.xPos-1][center.yPos-1+i] = SUPPORTUNIT;
                 }
             }
             break;
@@ -59,6 +60,7 @@ void BattleShip::Board::addP1Army(const BattleShip::point_t& center, const Battl
                 try {
                     p1Army[currP1Ironclad] = new Ironclad(center, direction, *this);
                     currP1Ironclad++;
+                    this->drawShip(center, direction, boat);
                 } catch(const std::invalid_argument& e) {
                     throw;
                 }
@@ -69,6 +71,7 @@ void BattleShip::Board::addP1Army(const BattleShip::point_t& center, const Battl
                 try {
                     p1Army[3 + currP1Support] = new Support(center, direction, *this);
                     currP1Support++;
+                    this->drawShip(center, direction, boat);
                 } catch(const std::invalid_argument& e) {
                     throw;
                 }
@@ -79,6 +82,7 @@ void BattleShip::Board::addP1Army(const BattleShip::point_t& center, const Battl
                 try {
                     p1Army[6 + currP1Submarine] = new Submarine(center, direction, *this);
                     currP1Submarine++;
+                    this->drawShip(center, direction, boat);
                 } catch(const std::invalid_argument& e) {
                     throw;
                 }
@@ -141,12 +145,12 @@ bool BattleShip::Board::checkPosition(const BattleShip::point_t& center, const B
         switch(army) {
             case BattleShip::ironclad:
                 switch(direction) {
-                    case BattleShip::northsouth:
+                    case BattleShip::eastwest:
                         if((center.yPos + 2 < 13 && center.yPos - 2 > 0) && 
                                 !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos][center.yPos-1] || defencegrid[center.xPos][center.yPos+1] 
                                     || defencegrid[center.xPos][center.yPos-2] || defencegrid[center.xPos][center.yPos+2])) return true;
                         break;
-                    case BattleShip::eastwest:
+                    case BattleShip::northsouth:
                         if((center.xPos + 2 < 13 && center.xPos - 2 > 0) && 
                                 !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos-1][center.yPos] || defencegrid[center.xPos+1][center.yPos] 
                                     || defencegrid[center.xPos-2][center.yPos] || defencegrid[center.xPos+2][center.yPos])) return true;
@@ -155,11 +159,11 @@ bool BattleShip::Board::checkPosition(const BattleShip::point_t& center, const B
                 break;
             case BattleShip::support:
                 switch(direction) {
-                    case BattleShip::northsouth:
+                    case BattleShip::eastwest:
                         if((center.yPos + 1 < 13 && center.yPos - 1 > 0) && 
                                 !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos][center.yPos-1] || defencegrid[center.xPos][center.yPos+1])) return true;
                         break;
-                    case BattleShip::eastwest:
+                    case BattleShip::northsouth:
                         if((center.xPos + 1 < 13 && center.xPos - 1 > 0) && 
                                 !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos-1][center.yPos] || defencegrid[center.xPos+1][center.yPos])) return true;
                         break;
