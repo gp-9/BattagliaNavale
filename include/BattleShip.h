@@ -6,9 +6,9 @@
 
 namespace BattleShip {
     typedef enum { pc, cc } match_t;
-    typedef enum { north, east, south, west } direction_t;
+    typedef enum { northsouth, eastwest } direction_t;
     typedef struct { std::uint32_t xPos; std::uint32_t yPos; } point_t;
-    typedef enum { ironclad, support, submarine } army_t;
+    typedef enum { submarine, support, ironclad } army_t;
 
     class Army;
     class Board;

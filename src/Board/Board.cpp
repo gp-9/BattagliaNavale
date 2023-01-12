@@ -8,6 +8,84 @@ BattleShip::Board* BattleShip::Board::instance() {
     return _board;
 }
 
+void BattleShip::Board::addP1Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
+    switch(boat) {
+        case BattleShip::ironclad:
+            if(BattleShip::Board::currP1Ironclad < 3) {
+                try {
+                    p1Army[currP1Ironclad] = nullptr;
+                    currP1Ironclad++;
+                try {
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+            } else throw std::invalid_argument("Too many Ironclad units");
+            break;
+        case BattleShip::support:
+            if(BattleShip::Board::currP1Support < 3) {
+                try {
+                    p1Army[3 + currP1Support] = nullptr;
+                    currP1Support++;
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+            } else throw std::invalid_argument("Too many Support units");
+            break;
+        case BattleShip::submarine:
+            if(BattleShip::Board::currP1Submarine < 2) {
+                try {
+                    p1Army[6 + currP1Submarine] = nullptr;
+                    currP1Submarine++;
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+            } else throw std::invalid_argument("Too many Submarine units");
+            break;
+    }
+}
+
+void BattleShip::Board::addP2Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
+    switch(boat) {
+        case BattleShip::ironclad:
+            if(BattleShip::Board::currP2Ironclad < 3) {
+                try {
+                    p2Army[currP2Ironclad] = nullptr;
+                    currP2Ironclad++;
+                try {
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+            } else throw std::invalid_argument("Too many Ironclad units");
+            break;
+        case BattleShip::support:
+            if(BattleShip::Board::currP2Support < 3) {
+                try {
+                    p2Army[3 + currP2Support] = nullptr;
+                    currP2Support++;
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+            } else throw std::invalid_argument("Too many Support units");
+            break;
+        case BattleShip::submarine:
+            if(BattleShip::Board::currP2Submarine < 2) {
+                try {
+                    p2Army[6 + currP2Submarine] = nullptr;
+                    currP2Submarine++;
+                } catch(const std::invalid_argument& e) {
+                    throw;
+                }
+            } else throw std::invalid_argument("Too many Submarine units");
+            break;
+    }
+}
+
 bool BattleShip::Board::hitBoard(BattleShip::point_t target, 
         const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& pDefenceGrid, 
         std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& pAttackGrid) {
@@ -21,37 +99,42 @@ bool BattleShip::Board::hitBoard(BattleShip::point_t target,
     return hit;
 }
 
-bool isInBoard(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army) {
-    if(center.xPos < 1 || center.xPos > 12 || center.yPos < 1 || center.yPos > 12) return false;
-    switch(army) {
-        case BattleShip::ironclad:
-            switch(direction) {
-                case BattleShip::north:
-                    if(center.yPos + 2 < 12 && center.yPos - 2 > 0) return true;
-                    break;
-                case BattleShip::south:
-                    if(center.yPos + 2 < 12 && center.yPos - 2 > 0) return true;
-                    break;
-                case BattleShip::east:
-                    if(center.xPos + 2 < 12 && center.xPos - 2 > 0) return true;
-                    break;
-                case BattleShip::west:
-                    if(center.xPos + 2 < 12 && center.xPos - 2 > 0) return true;
-                    break;
-            }
-            break;
-        case BattleShip::support:
-            break;
-        case BattleShip::submarine:
-            break;
-    }
-    return false;
-}
-
 bool BattleShip::Board::checkPosition(const BattleShip::point_t& center, const BattleShip::direction_t& direction,
                 const BattleShip::army_t& army, const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& defencegrid) const {
-    bool isValidPosition = false;
-    return isValidPosition;
+    if((center.xPos > 0 && center.xPos < 13) && (center.yPos > 0 && center.yPos < 13)) {
+        switch(army) {
+            case BattleShip::ironclad:
+                switch(direction) {
+                    case BattleShip::northsouth:
+                        if((center.yPos + 2 < 13 && center.yPos - 2 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos][center.yPos-1] || defencegrid[center.xPos][center.yPos+1] 
+                                    || defencegrid[center.xPos][center.yPos-2] || defencegrid[center.xPos][center.yPos+2])) return true;
+                        break;
+                    case BattleShip::eastwest:
+                        if((center.xPos + 2 < 13 && center.xPos - 2 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos-1][center.yPos] || defencegrid[center.xPos+1][center.yPos] 
+                                    || defencegrid[center.xPos-2][center.yPos] || defencegrid[center.xPos+2][center.yPos])) return true;
+                        break;
+                }
+                break;
+            case BattleShip::support:
+                switch(direction) {
+                    case BattleShip::northsouth:
+                        if((center.yPos + 1 < 13 && center.yPos - 1 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos][center.yPos-1] || defencegrid[center.xPos][center.yPos+1])) return true;
+                        break;
+                    case BattleShip::eastwest:
+                        if((center.xPos + 1 < 13 && center.xPos - 1 > 0) && 
+                                !(defencegrid[center.xPos][center.yPos] || defencegrid[center.xPos-1][center.yPos] || defencegrid[center.xPos+1][center.yPos])) return true;
+                        break;
+                }
+                break;
+            case BattleShip::submarine:
+                if(!defencegrid[center.xPos][center.yPos]) return true;
+                break;
+        }
+    }
+    return false;
 }
 
 void addTopBorder(std::stringstream& input) {
