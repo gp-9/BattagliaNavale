@@ -157,7 +157,7 @@ std::string eval(const std::string& input, const BattleShip::Board& board, const
                 origin.yPos = yOrigin;
                 target.yPos = yTarget;
                 std::stringstream s; 
-                s << static_cast<char>(origin.xPos) << origin.yPos << " " << static_cast<char>(target.xPos) << target.yPos << '\n';
+                s << static_cast<char>(tokens[0][0]) << origin.yPos << " " << static_cast<char>(tokens[1][0]) << target.yPos << '\n';
                 output = s.str();
                 if(settingup) {
                     BattleShip::direction_t shipdir;
