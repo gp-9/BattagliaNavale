@@ -26,7 +26,7 @@ class BattleShip::Army {
     void operator=(const BattleShip::Army&) = delete;
 
     public:
-        virtual bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target) = 0;
+        virtual bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board) = 0;
 
     protected:
         Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::Board& board) {}
