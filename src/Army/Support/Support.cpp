@@ -9,6 +9,6 @@ BattleShip::Support::Support(const BattleShip::point_t& origin, const BattleShip
     } else throw std::invalid_argument("Invalide position of Support");
 }
 
-bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board){
+bool BattleShip::Support::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board){
     
 }

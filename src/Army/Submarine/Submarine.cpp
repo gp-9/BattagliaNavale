@@ -9,6 +9,6 @@ BattleShip::Submarine::Submarine(const BattleShip::point_t& origin, const Battle
     } else throw std::invalid_argument("Invalide position of Submarine");
 }
 
-bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board){
+bool BattleShip::Submarine::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board){
     
 }

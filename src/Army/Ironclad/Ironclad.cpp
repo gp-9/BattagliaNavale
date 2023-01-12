@@ -9,6 +9,6 @@ BattleShip::Ironclad::Ironclad(const BattleShip::point_t& origin, const BattleSh
     } else throw std::invalid_argument("Invalide position of Ironclad");
 }
 
-bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board){
+bool BattleShip::Ironclad::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board){
     
 }
