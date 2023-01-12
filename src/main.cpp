@@ -42,59 +42,63 @@ int main (int argc, char *argv[]) {
         return -1;
     }
 
-    const static std::string prompt = "\033[36;1m>\033[35;1m>\033[0m ";
-    const static std::string errorprompt = "\033[31;1m>>\033[0m ";
-    std::string line;
     std::stringstream output {};
-    output << prompt;
     int currIronclad = 0;
     int currSupport = 0;
     int currSubmarine = 0;
     bool exited = false;
-    while(currIronclad < 3 || currSupport < 3 || currSubmarine < 3) {
-        BattleShip::army_t boat;
-        if(currIronclad < 3) {
-            boat = BattleShip::ironclad;
-            output << "Quali sono le coordinate per la corazzata " << (currIronclad + 1) << '\n' << prompt;
-        } else if(currSupport < 3) {
-            boat = BattleShip::support;
-            output << "Quali sono le coordinate per la nave di supporto " << (currSupport + 1) << '\n' << prompt;
-        } else if(currSubmarine < 3) {
-            boat = BattleShip::submarine;
-            output << "Quali sono le coordinate per il sottomarino " << (currSubmarine + 1) << '\n' << prompt;
-        }
-        std::cout << output.str();
-        output.str("");
-        if(!std::getline(std::cin, line)) {
-            std::cout << "\nExiting BattleShip prompt" << std::endl;
-            exited = true;
-            break;
-        } else {
-            try {
-                output << setupBoard(line, *gameBoard, boat) << prompt;
-                currIronclad = gameBoard->getCurrP1Iroclad();
-                currSupport = gameBoard->getCurrP1Support();
-                currSubmarine = gameBoard->getCurrP1Submarine();
-            } catch(const std::invalid_argument& e) {
-                output << e.what() << ". Please reinsert the command\n" << errorprompt;
-            }
-        }
-    }
-    output.str("");
-    while(!exited) {
-        if(!std::getline(std::cin, line)) {
-            std::cout << "\nExiting BattleShip prompt" << std::endl;
-            exited = true;
-            break;
-        } else {
-            try {
-                output << eval(line, *gameBoard) << prompt;
-            } catch(const std::invalid_argument& e) {
-                output << e.what() << ". Please reinsert the command\n" << errorprompt;
+    if(typeofmatch == BattleShip::pc) {
+        const static std::string prompt = "\033[36;1m>\033[35;1m>\033[0m ";
+        const static std::string errorprompt = "\033[31;1m>>\033[0m ";
+        std::string line;
+        output << prompt;
+        while(currIronclad < 3 || currSupport < 3 || currSubmarine < 3) {
+            BattleShip::army_t boat;
+            if(currIronclad < 3) {
+                boat = BattleShip::ironclad;
+                output << "Quali sono le coordinate per la corazzata " << (currIronclad + 1) << '\n' << prompt;
+            } else if(currSupport < 3) {
+                boat = BattleShip::support;
+                output << "Quali sono le coordinate per la nave di supporto " << (currSupport + 1) << '\n' << prompt;
+            } else if(currSubmarine < 3) {
+                boat = BattleShip::submarine;
+                output << "Quali sono le coordinate per il sottomarino " << (currSubmarine + 1) << '\n' << prompt;
             }
             std::cout << output.str();
             output.str("");
+            if(!std::getline(std::cin, line)) {
+                std::cout << "\nExiting BattleShip prompt" << std::endl;
+                exited = true;
+                break;
+            } else {
+                try {
+                    output << setupBoard(line, *gameBoard, boat) << prompt;
+                    currIronclad = gameBoard->getCurrP1Iroclad();
+                    currSupport = gameBoard->getCurrP1Support();
+                    currSubmarine = gameBoard->getCurrP1Submarine();
+                } catch(const std::invalid_argument& e) {
+                    output << e.what() << ". Please reinsert the command\n" << errorprompt;
+                }
+            }
         }
+        output.str("");
+        while(!exited) {
+            if(!std::getline(std::cin, line)) {
+                std::cout << "\nExiting BattleShip prompt" << std::endl;
+                exited = true;
+                break;
+            } else {
+                try {
+                    output << eval(line, *gameBoard) << prompt;
+                } catch(const std::invalid_argument& e) {
+                    output << e.what() << ". Please reinsert the command\n" << errorprompt;
+                }
+                std::cout << output.str();
+                output.str("");
+            }
+        }
+    } else {
+        output << "Playing game Computer vs Computer\n";
     }
     return 0;
 }

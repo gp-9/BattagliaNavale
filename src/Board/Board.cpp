@@ -1,5 +1,8 @@
 #include <sstream>
 #include "../../include/Board/Board.h"
+#include "../../include/Army/Ironclad/Ironclad.h"
+#include "../../include/Army/Support/Support.h"
+#include "../../include/Army/Submarine/Submarine.h"
 
 BattleShip::Board* BattleShip::Board::_board = nullptr;
 
@@ -8,17 +11,54 @@ BattleShip::Board* BattleShip::Board::instance() {
     return _board;
 }
 
+void BattleShip::Board::updateP1DefenceGrid(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
+    switch(boat) {
+        case BattleShip::ironclad:
+            break;
+        case BattleShip::support:
+            break;
+        case BattleShip::submarine:
+            break;
+    }
+}
+
+void BattleShip::Board::drawShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
+    switch(boat) {
+        case BattleShip::ironclad:
+            if(direction == BattleShip::northsouth) {
+                for(int i=-2; i < 3; i++) {
+                    p1DefenceGrid[center.xPos][center.yPos-1+i] = IRONCLADUNIT;
+                }
+            } else {
+                for(int i=-2; i < 3; i++) {
+                    p1DefenceGrid[center.xPos-1+i][center.yPos] = IRONCLADUNIT;
+                }
+            }
+            break;
+        case BattleShip::support:
+            if(direction == BattleShip::northsouth) {
+                for(int i=-1; i < 2; i++) {
+                    p1DefenceGrid[center.xPos][center.yPos-1+i] = SUPPORTUNIT;
+                }
+            } else {
+                for(int i=-1; i < 2; i++) {
+                    p1DefenceGrid[center.xPos-1+i][center.yPos] = IRONCLADUNIT;
+                }
+            }
+            break;
+        case BattleShip::submarine:
+            p1DefenceGrid[center.xPos-1][center.yPos-1] = SUBMARINEUNIT;
+            break;
+    }
+}
+
 void BattleShip::Board::addP1Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
     switch(boat) {
         case BattleShip::ironclad:
             if(BattleShip::Board::currP1Ironclad < 3) {
                 try {
-                    p1Army[currP1Ironclad] = nullptr;
+                    p1Army[currP1Ironclad] = new Ironclad(center, direction, *this);
                     currP1Ironclad++;
-                try {
-                } catch(const std::invalid_argument& e) {
-                    throw;
-                }
                 } catch(const std::invalid_argument& e) {
                     throw;
                 }
@@ -27,7 +67,7 @@ void BattleShip::Board::addP1Army(const BattleShip::point_t& center, const Battl
         case BattleShip::support:
             if(BattleShip::Board::currP1Support < 3) {
                 try {
-                    p1Army[3 + currP1Support] = nullptr;
+                    p1Army[3 + currP1Support] = new Support(center, direction, *this);
                     currP1Support++;
                 } catch(const std::invalid_argument& e) {
                     throw;
@@ -37,7 +77,7 @@ void BattleShip::Board::addP1Army(const BattleShip::point_t& center, const Battl
         case BattleShip::submarine:
             if(BattleShip::Board::currP1Submarine < 2) {
                 try {
-                    p1Army[6 + currP1Submarine] = nullptr;
+                    p1Army[6 + currP1Submarine] = new Submarine(center, direction, *this);
                     currP1Submarine++;
                 } catch(const std::invalid_argument& e) {
                     throw;
@@ -52,12 +92,8 @@ void BattleShip::Board::addP2Army(const BattleShip::point_t& center, const Battl
         case BattleShip::ironclad:
             if(BattleShip::Board::currP2Ironclad < 3) {
                 try {
-                    p2Army[currP2Ironclad] = nullptr;
+                    p2Army[currP2Ironclad] = new Ironclad(center, direction, *this);
                     currP2Ironclad++;
-                try {
-                } catch(const std::invalid_argument& e) {
-                    throw;
-                }
                 } catch(const std::invalid_argument& e) {
                     throw;
                 }
@@ -66,7 +102,7 @@ void BattleShip::Board::addP2Army(const BattleShip::point_t& center, const Battl
         case BattleShip::support:
             if(BattleShip::Board::currP2Support < 3) {
                 try {
-                    p2Army[3 + currP2Support] = nullptr;
+                    p2Army[3 + currP2Support] = new Support(center, direction, *this);
                     currP2Support++;
                 } catch(const std::invalid_argument& e) {
                     throw;
@@ -76,7 +112,7 @@ void BattleShip::Board::addP2Army(const BattleShip::point_t& center, const Battl
         case BattleShip::submarine:
             if(BattleShip::Board::currP2Submarine < 2) {
                 try {
-                    p2Army[6 + currP2Submarine] = nullptr;
+                    p2Army[6 + currP2Submarine] = new Submarine(center, direction, *this);
                     currP2Submarine++;
                 } catch(const std::invalid_argument& e) {
                     throw;

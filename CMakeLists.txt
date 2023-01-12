@@ -16,6 +16,18 @@ add_library(Army
     include/Army/Army.h
     src/Army/Army.cpp)
 
+add_library(Ironclad
+    include/Army/Ironclad/Ironclad.h
+    src/Army/Ironclad/Ironclad.cpp)
+
+add_library(Support
+    include/Army/Support/Support.h
+    src/Army/Support/Support.cpp)
+
+add_library(Submarine
+    include/Army/Submarine/Submarine.h
+    src/Army/Submarine/Submarine.cpp)
+
 add_library(Board
     include/Board/Board.h
     src/Board/Board.cpp)
@@ -29,4 +41,7 @@ target_link_libraries(battaglia_navale
     Utils
     Board
     BattleShip
-    Army)
+    Army
+    Ironclad
+    Support
+    Submarine)

@@ -34,6 +34,11 @@ class BattleShip::Board {
     BattleShip::Board& operator=(const BattleShip::Board&) = delete;
     Board() {}
     ~Board() {}
+    void drawShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat);
+    void updateP1DefenceGrid(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat);
+    void updateP2DefenceGrid(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat);
+    void updateP1AttackGrid(const BattleShip::point_t& origin, const BattleShip::point_t& target, const BattleShip::army_t& boat);
+    void updateP2AttackGrid(const BattleShip::point_t& origin, const BattleShip::point_t& target, const BattleShip::army_t& boat);
 
     public:
         static BattleShip::Board* instance();
