@@ -12,43 +12,47 @@ BattleShip::Board* BattleShip::Board::instance() {
     return _board;
 }
 
-void BattleShip::Board::updateP1DefenceGrid(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
-    switch(boat) {
-        case BattleShip::ironclad:
-            break;
-        case BattleShip::support:
-            break;
-        case BattleShip::submarine:
-            break;
-    }
+void BattleShip::Board::drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+	// tutte e due le coordinate vanno decremenetate dato che partono da 1 e l'array invece parte da 0
+	if(direction == BattleShip::northsouth) {
+		for(int i=-2; i < 3; i++) {
+			p1DefenceGrid[center.xPos-1+i][center.yPos-1] = IRONCLADUNIT;
+		}
+	} else {
+		for(int i=-2; i < 3; i++) {
+			p1DefenceGrid[center.xPos-1][center.yPos-1+i] = IRONCLADUNIT;
+		}
+	}
+}
+
+void BattleShip::Board::drawSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+	// tutte e due le coordinate vanno decremenetate dato che partono da 1 e l'array invece parte da 0
+	if(direction == BattleShip::northsouth) {
+		for(int i=-1; i < 2; i++) {
+			p1DefenceGrid[center.xPos-1+i][center.yPos-1] = SUPPORTUNIT;
+		}
+	} else {
+		for(int i=-1; i < 2; i++) {
+			p1DefenceGrid[center.xPos-1][center.yPos-1+i] = SUPPORTUNIT;
+		}
+	}
+}
+
+void BattleShip::Board::drawSubmarine(const BattleShip::point_t& center) {
+	// Il sottomarino ha dimensione 1
+	p1DefenceGrid[center.xPos-1][center.yPos-1] = SUBMARINEUNIT;
 }
 
 void BattleShip::Board::drawShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
     switch(boat) {
         case BattleShip::ironclad:
-            if(direction == BattleShip::northsouth) {
-                for(int i=-2; i < 3; i++) {
-                    p1DefenceGrid[center.xPos-1+i][center.yPos-1] = IRONCLADUNIT;
-                }
-            } else {
-                for(int i=-2; i < 3; i++) {
-                    p1DefenceGrid[center.xPos-1][center.yPos-1+i] = IRONCLADUNIT;
-                }
-            }
+			drawIronclad(center, direction);
             break;
         case BattleShip::support:
-            if(direction == BattleShip::northsouth) {
-                for(int i=-1; i < 2; i++) {
-                    p1DefenceGrid[center.xPos-1+i][center.yPos-1] = SUPPORTUNIT;
-                }
-            } else {
-                for(int i=-1; i < 2; i++) {
-                    p1DefenceGrid[center.xPos-1][center.yPos-1+i] = SUPPORTUNIT;
-                }
-            }
+			drawSupport(center, direction);
             break;
         case BattleShip::submarine:
-            p1DefenceGrid[center.xPos-1][center.yPos-1] = SUBMARINEUNIT;
+			drawSubmarine(center);
             break;
     }
 }
@@ -124,6 +128,46 @@ void BattleShip::Board::addP2Army(const BattleShip::point_t& center, const Battl
             } else throw std::invalid_argument("Too many Submarine units");
             break;
     }
+}
+
+void BattleShip::Board::resetP1HitsAttackGrid() {
+	for(int y=0; y < GRIDSIZE; y++) {
+		for(int x=0; x < GRIDSIZE; x++) {
+			if(p1AttackGrid[y][x] ==  HIT) {
+				p1AttackGrid[y][x] = ' ';
+			}
+		}
+	}
+}
+
+void BattleShip::Board::resetP1MissAttackGrid() {
+	for(int y=0; y < GRIDSIZE; y++) {
+		for(int x=0; x < GRIDSIZE; x++) {
+			if(p1AttackGrid[y][x] ==  MISS) {
+				p1AttackGrid[y][x] = ' ';
+			}
+		}
+	}
+}
+
+void BattleShip::Board::resetP2HitsAttackGrid() {
+	for(int y=0; y < GRIDSIZE; y++) {
+		for(int x=0; x < GRIDSIZE; x++) {
+			if(p2AttackGrid[y][x] ==  HIT) {
+				p2AttackGrid[y][x] = ' ';
+			}
+		}
+	}
+}
+
+void BattleShip::Board::resetP2MissAttackGrid() {
+	for(int y=0; y < GRIDSIZE; y++) {
+		for(int x=0; x < GRIDSIZE; x++) {
+			if(p2AttackGrid[y][x] ==  MISS) {
+				p2AttackGrid[y][x] = ' ';
+			}
+		}
+	}
 }
 
 bool BattleShip::Board::hitBoard(BattleShip::point_t target, 
