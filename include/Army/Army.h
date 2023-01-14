@@ -18,10 +18,6 @@ class BattleShip::Army {
 */
 
 class BattleShip::Army {
-    std::size_t size;
-    std::size_t armor;
-    BattleShip::point_t center;
-    BattleShip::direction_t direction;
     Army(const BattleShip::Army&) = delete;
     void operator=(const BattleShip::Army&) = delete;
 
@@ -31,5 +27,9 @@ class BattleShip::Army {
 
     protected:
         Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::Board& board) {}
+        std::size_t size;
+        std::size_t armor;
+        BattleShip::point_t center;
+        BattleShip::direction_t direction;
 };
 #endif // ARMY_H_

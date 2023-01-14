@@ -16,6 +16,7 @@
 #define IRONCLADUNIT 'C'
 #define SUPPORTUNIT 'S'
 #define SUBMARINEUNIT 'E'
+#define EMPTY ' '
 
 class BattleShip::Board {
     std::array<std::array<char, GRIDSIZE>, GRIDSIZE> p1DefenceGrid {};
