@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "../include/BattleShip.h"
 #include "../include/Utils/Utils.h"
 #include "../include/Army/Army.h"
@@ -25,6 +26,7 @@ int main (int argc, char *argv[]) {
         std::cout << "Nessun argomento fornito, sarà usato Giocatore vs Computer" << std::endl;
         typeofmatch = BattleShip::pc;
     } else if (argc == 2) {
+        
         char tmpstring[2] = {0};
         std::strncpy(tmpstring, argv[1], 2);
         std::string tmptypeofmatch = tmpstring;
@@ -56,12 +58,15 @@ int main (int argc, char *argv[]) {
     int currSupport = 0;
     int currSubmarine = 0;
     bool exited = false;
-
+    std::ofstream myFile;
+    myFile.open("../logFiles/pcLogFile.txt");
     if(typeofmatch == BattleShip::pc) {
         const static std::string prompt = "\033[36;1m>\033[35;1m>\033[0m ";
         const static std::string errorprompt = "\033[31;1m>>\033[0m ";
         std::string line;
         output << prompt;
+        
+
         while(currIronclad < 3 || currSupport < 3 || currSubmarine < 3) {
             BattleShip::army_t boat;
             if(currIronclad < 3) {
@@ -77,11 +82,15 @@ int main (int argc, char *argv[]) {
             std::cout << output.str();
             output.str("");
             if(!std::getline(std::cin, line)) {
+                
+                myFile << line << std::endl;
                 std::cout << "\nUscendo dal prompt di Battaglia Navale" << std::endl;
                 exited = true;
                 break;
             } else {
-                try {
+
+                myFile << line << std::endl;
+                try {   
                     output << setupBoard(line, gameBoard, boat, BattleShip::p1) << prompt;
                     currIronclad = gameBoard.getCurrP1Iroclad();
                     currSupport = gameBoard.getCurrP1Support();
@@ -105,6 +114,7 @@ int main (int argc, char *argv[]) {
 				while(!done) {
 					try {
 						eval(output.str(), gameBoard);
+    
 						done = true;
 					} catch(const std::invalid_argument& e) {
 					}
@@ -112,12 +122,15 @@ int main (int argc, char *argv[]) {
 				output.str("");
 				std::cout << prompt;
 				if(!std::getline(std::cin, line)) {
+                    
 					std::cout << "\nUscendo dal prompt di Battaglia Navale" << std::endl;
 					exited = true;
 					break;
 				} else {
+                    myFile << line << '\n';
 					try {
 						output << eval(line, gameBoard) << prompt;
+        
 					} catch(const std::invalid_argument& e) {
 						output << e.what() << ". Perfavore reinserire il comando\n" << errorprompt;
 					}
@@ -127,11 +140,14 @@ int main (int argc, char *argv[]) {
 			} else {
 				if(!std::getline(std::cin, line)) {
 					std::cout << "\nUscendo dal prompt di Battaglia Navale" << std::endl;
+    
 					exited = true;
 					break;
 				} else {
+                    myFile << line << '\n';
 					try {
 						output << eval(line, gameBoard) << prompt;
+        
 					} catch(const std::invalid_argument& e) {
 						output << e.what() << ". Perfavore reinserire il comando\n" << errorprompt;
 					}
@@ -146,8 +162,11 @@ int main (int argc, char *argv[]) {
 					}
 				}
 			}
+            
 			done = false;
         }
+        
+    myFile.close();
     } else {
         std::cout << "Giocando partita Computer vs Computer\n";
 		//addBotArmy(gameBoard, BattleShip::p1);
@@ -156,6 +175,7 @@ int main (int argc, char *argv[]) {
 		} else {
 		}
     }
+    
     return 0;
 }
 
