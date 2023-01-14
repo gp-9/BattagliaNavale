@@ -7,11 +7,11 @@ void BattleShip::DefenceGrid::drawIronclad(const BattleShip::point_t& center, co
 	// tutte e due le coordinate vanno decremenetate dato che partono da 1 e l'array invece parte da 0
 	if(direction == BattleShip::northsouth) {
 		for(int i=-2; i < 3; i++) {
-            Grid::_grid[center.xPos+i][center.yPos] = IRONCLADUNIT;
+            Grid::modifyGrid({center.xPos+i, center.yPos}, IRONCLADUNIT);
 		}
 	} else {
 		for(int i=-2; i < 3; i++) {
-            Grid::_grid[center.xPos][center.yPos+i] = IRONCLADUNIT;
+            Grid::modifyGrid({center.xPos, center.yPos+i}, IRONCLADUNIT);
 		}
 	}
 }
@@ -20,29 +20,29 @@ void BattleShip::DefenceGrid::drawSupport(const BattleShip::point_t& center, con
 	// tutte e due le coordinate vanno decremenetate dato che partono da 1 e l'array invece parte da 0
 	if(direction == BattleShip::northsouth) {
 		for(int i=-1; i < 2; i++) {
-            Grid::_grid[center.xPos+i][center.yPos] = SUPPORTUNIT;
+            Grid::modifyGrid({center.xPos+i, center.yPos}, SUPPORTUNIT);
 		}
 	} else {
 		for(int i=-1; i < 2; i++) {
-            Grid::_grid[center.xPos][center.yPos+i] = SUPPORTUNIT;
+            Grid::modifyGrid({center.xPos, center.yPos+i}, SUPPORTUNIT);
 		}
 	}
 }
 
 void BattleShip::DefenceGrid::drawSubmarine(const BattleShip::point_t& center) {
 	// Il sottomarino ha dimensione 1
-    Grid::_grid[center.xPos][center.yPos] = SUBMARINEUNIT;
+    Grid::modifyGrid(center, SUBMARINEUNIT);
 }
 
 bool BattleShip::DefenceGrid::checkIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) const {
     switch(direction) {
         case BattleShip::eastwest:
             if((center.yPos + 2 < GRIDSIZE && center.yPos - 2 >= 0) && checkSupport(center, BattleShip::eastwest) &&
-                    !(Grid::_grid[center.xPos][center.yPos-2] || Grid::_grid[center.xPos][center.yPos+2])) return true;
+                    !(Grid::getGridPosition({center.xPos, center.yPos-2}) || Grid::getGridPosition({center.xPos, center.yPos+2}))) return true;
         break;
         case BattleShip::northsouth:
             if((center.xPos + 2 < GRIDSIZE && center.xPos - 2 >= 0) && checkSupport(center, BattleShip::northsouth) &&
-                    !(Grid::_grid[center.xPos-2][center.yPos] || Grid::_grid[center.xPos+2][center.yPos])) return true;
+                    !(Grid::getGridPosition({center.xPos-2, center.yPos}) || Grid::getGridPosition({center.xPos+2, center.yPos}))) return true;
         break;
     }
     return false;
@@ -53,11 +53,11 @@ bool BattleShip::DefenceGrid::checkSupport(const BattleShip::point_t& center, co
     switch(direction) {
         case BattleShip::eastwest:
             if((center.yPos + 1 < GRIDSIZE && center.yPos - 1 >= 0) && checkSubmarine(center) &&
-                    !(Grid::_grid[center.xPos][center.yPos-1] || Grid::_grid[center.xPos][center.yPos+1])) return true;
+                    !(Grid::getGridPosition({center.xPos, center.yPos-1}) || Grid::getGridPosition({center.xPos, center.yPos+1}))) return true;
         break;
         case BattleShip::northsouth:
             if((center.xPos + 1 < GRIDSIZE && center.xPos - 1 >= 0) && checkSubmarine(center) &&
-                    !(Grid::_grid[center.xPos-1][center.yPos] || Grid::_grid[center.xPos+1][center.yPos])) return true;
+                    !(Grid::getGridPosition({center.xPos-1, center.yPos}) || Grid::getGridPosition({center.xPos+1, center.yPos}))) return true;
         break;
     }
     return false;
@@ -65,7 +65,7 @@ bool BattleShip::DefenceGrid::checkSupport(const BattleShip::point_t& center, co
 
 
 bool BattleShip::DefenceGrid::checkSubmarine(const BattleShip::point_t& center) const {
-    if(!Grid::_grid[center.xPos][center.yPos]) return true;
+    if(!Grid::getGridPosition(center)) return true;
     return false;
 }
 
@@ -73,11 +73,11 @@ bool BattleShip::DefenceGrid::checkSubmarine(const BattleShip::point_t& center) 
 void BattleShip::DefenceGrid::deleteIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
 	if(direction == BattleShip::northsouth) {
 		for(int i=-2; i < 3; i++) {
-            Grid::_grid[center.xPos+i][center.yPos] = 0;
+            Grid::modifyGrid({center.xPos+i, center.yPos}, 0);
 		}
 	} else {
 		for(int i=-2; i < 3; i++) {
-            Grid::_grid[center.xPos][center.yPos+i] = 0;
+            Grid::modifyGrid({center.xPos, center.yPos+i}, 0);
 		}
 	}
 }
@@ -85,28 +85,30 @@ void BattleShip::DefenceGrid::deleteIronclad(const BattleShip::point_t& center, 
 void BattleShip::DefenceGrid::deleteSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
 	if(direction == BattleShip::northsouth) {
 		for(int i=-1; i < 2; i++) {
-            Grid::_grid[center.xPos+i][center.yPos] = 0;
+            Grid::modifyGrid({center.xPos+i, center.yPos}, 0);
 		}
 	} else {
 		for(int i=-1; i < 2; i++) {
-            Grid::_grid[center.xPos][center.yPos+i] = 0;
+            Grid::modifyGrid({center.xPos, center.yPos+i}, 0);
 		}
 	}
 }
 
 void BattleShip::DefenceGrid::deleteSubmarine(const BattleShip::point_t& center) {
-    Grid::_grid[center.xPos][center.yPos] = 0;
+    Grid::modifyGrid(center, 0);
 }
 
 bool BattleShip::DefenceGrid::checkIroncladDestroyed(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
     switch(direction) {
         case BattleShip::eastwest:
-            if((center.yPos + 2 < GRIDSIZE && center.yPos - 2 >= 0) && checkSupportDestroyed(center, BattleShip::eastwest) &&
-                    (Grid::_grid[center.xPos][center.yPos-2] && Grid::_grid[center.xPos][center.yPos+2])) return true;
+            if((center.yPos + 2 < GRIDSIZE && center.yPos - 2 >= 0) && Grid::assertCharEq(center, IRONCLADDAMAGE) && Grid::assertCharEq({center.xPos, center.yPos-1}, IRONCLADDAMAGE) && 
+                Grid::assertCharEq({center.xPos, center.yPos+1}, IRONCLADDAMAGE) && Grid::assertCharEq({center.xPos, center.yPos-2}, IRONCLADDAMAGE) && 
+                Grid::assertCharEq({center.xPos, center.yPos+2}, IRONCLADDAMAGE)) return true;
         break;
         case BattleShip::northsouth:
-            if((center.xPos + 2 < GRIDSIZE && center.xPos - 2 >= 0) && checkSupportDestroyed(center, BattleShip::northsouth) &&
-                    (Grid::_grid[center.xPos-2][center.yPos] && Grid::_grid[center.xPos+2][center.yPos])) return true;
+            if((center.xPos + 2 < GRIDSIZE && center.xPos - 2 >= 0) && Grid::assertCharEq(center, IRONCLADDAMAGE) && Grid::assertCharEq({center.xPos-1, center.yPos}, IRONCLADDAMAGE) && 
+                Grid::assertCharEq({center.xPos+1, center.yPos}, IRONCLADDAMAGE) && Grid::assertCharEq({center.xPos-2, center.yPos}, IRONCLADDAMAGE) && 
+                Grid::assertCharEq({center.xPos+2, center.yPos}, IRONCLADDAMAGE)) return true;
         break;
     }
     return false;
@@ -115,19 +117,19 @@ bool BattleShip::DefenceGrid::checkIroncladDestroyed(const BattleShip::point_t& 
 bool BattleShip::DefenceGrid::checkSupportDestroyed(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
     switch(direction) {
         case BattleShip::eastwest:
-            if((center.yPos + 1 < GRIDSIZE && center.yPos - 1 >= 0) && checkSubmarineDestroyed(center) &&
-                    (Grid::_grid[center.xPos][center.yPos-1] && Grid::_grid[center.xPos][center.yPos+1])) return true;
+            if((center.yPos + 1 < GRIDSIZE && center.yPos - 1 >= 0) && Grid::assertCharEq(center, SUPPORTDAMAGE) &&
+                    Grid::assertCharEq({center.xPos, center.yPos-1}, SUPPORTDAMAGE) && Grid::assertCharEq({center.xPos, center.yPos+1},SUPPORTDAMAGE)) return true;
         break;
         case BattleShip::northsouth:
-            if((center.xPos + 1 < GRIDSIZE && center.xPos - 1 >= 0) && checkSubmarineDestroyed(center) &&
-                    (Grid::_grid[center.xPos-1][center.yPos] && Grid::_grid[center.xPos+1][center.yPos])) return true;
+            if((center.xPos + 1 < GRIDSIZE && center.xPos - 1 >= 0) && Grid::assertCharEq(center, SUPPORTDAMAGE) &&
+                    Grid::assertCharEq({center.xPos-1, center.yPos}, SUPPORTDAMAGE) && Grid::assertCharEq({center.xPos+1, center.yPos}, SUPPORTDAMAGE)) return true;
         break;
     }
     return false;
 }
 
 bool BattleShip::DefenceGrid::checkSubmarineDestroyed(const BattleShip::point_t& center) {
-    if(Grid::_grid[center.xPos][center.yPos]) return true;
+    if(Grid::assertCharEq(center, SUBMARINEDAMAGE)) return true;
     return false;
 }
 
@@ -149,14 +151,14 @@ bool BattleShip::DefenceGrid::checkPosition(const BattleShip::point_t& center, c
 }
 
 bool BattleShip::DefenceGrid::checkHit(const BattleShip::point_t& target) const {
-    char unit = Grid::_grid[target.xPos][target.yPos];
+    char unit = Grid::getGridPosition(target);
     if(unit == IRONCLADUNIT || unit == SUPPORTUNIT || unit == SUBMARINEUNIT) return true;
     return false;
 }
 
 bool BattleShip::DefenceGrid::hitPosition(const BattleShip::point_t& target) {
     if(checkHit(target)) {
-        Grid::_grid[target.xPos][target.yPos] = char(Grid::_grid[target.xPos][target.yPos] + 32); // 32 e' la differenza tra i caratteri ascii maiuscoli e minuscoli
+        Grid::modifyGrid(target, char(Grid::getGridPosition(target) + 32)); // 32 e' la differenza tra i caratteri ascii maiuscoli e minuscoli
         return true;
     }
     return false;
@@ -164,21 +166,63 @@ bool BattleShip::DefenceGrid::hitPosition(const BattleShip::point_t& target) {
 
 void BattleShip::DefenceGrid::addIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
     if(checkIronclad(center, direction) && _currIronclad < IRONCLAD) {
+        _ironcladCenters[_currIronclad] = center;
         _currIronclad++;
         drawIronclad(center, direction);
+        startGame();
     } else throw std::invalid_argument("Posizione o direzione non valida per una corazzata");
 }
 
 void BattleShip::DefenceGrid::addSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
     if(checkSupport(center, direction) && _currSupport < SUPPORT) {
+        _supportCenters[_currSupport] = center;
         _currSupport++;
         drawSupport(center, direction);
+        startGame();
     } else throw std::invalid_argument("Posizione o direzione non valida per una nave di supporto");
 }
 
 void BattleShip::DefenceGrid::addSubmarine(const BattleShip::point_t& center) {
     if(checkSubmarine(center) && _currSubmarine < SUBMARINE) {
+        _submarineCenters[_currSubmarine] = center;
         _currSubmarine++;
         drawSubmarine(center);
+        startGame();
     } else throw std::invalid_argument("Posizione non valida per un sottomarino");
+}
+
+void BattleShip::DefenceGrid::destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+    for(int i = 0; i < IRONCLAD; i++) {
+        if(_ironcladCenters[i].xPos == center.xPos && _ironcladCenters[i].yPos == center.yPos) {
+            if(checkIroncladDestroyed(center, direction)) {
+                deleteIronclad(center, direction);
+                _ironcladCenters[i] = {};
+                _currIronclad--;
+            }
+        }
+    }
+}
+
+void BattleShip::DefenceGrid::destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+    for(int i = 0; i < SUPPORT; i++) {
+        if(_supportCenters[i].xPos == center.xPos && _supportCenters[i].yPos == center.yPos) {
+            if(checkSupportDestroyed(center, direction)) {
+                deleteSupport(center, direction);
+                _supportCenters[i] = {};
+                _currSupport--;
+            }
+        }
+    }
+}
+
+void BattleShip::DefenceGrid::destroySubmarine(const BattleShip::point_t& center) {
+    for(int i = 0; i < SUBMARINE; i++) {
+        if(_submarineCenters[i].xPos == center.xPos && _submarineCenters[i].yPos == center.yPos) {
+            if(checkSubmarineDestroyed(center)) {
+                deleteSubmarine(center);
+                _submarineCenters[i] = {};
+                _currSubmarine--;
+            }
+        }
+    }
 }

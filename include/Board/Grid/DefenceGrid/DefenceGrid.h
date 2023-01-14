@@ -47,8 +47,8 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
         void addIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSubmarine(const BattleShip::point_t& center);
-        void destroyIronclad(const BattleShip::point_t& center);
-        void destroySupport(const BattleShip::point_t& center);
+        void destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+        void destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void destroySubmarine(const BattleShip::point_t& center);
         inline bool matchTermianted() const { return (!_settingup && _currIronclad == 0 && _currSupport == 0 && _currSubmarine == 0); }
 
