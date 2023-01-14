@@ -35,10 +35,6 @@ class BattleShip::Board {
     BattleShip::Board& operator=(const BattleShip::Board&) = delete;
 	Board(const BattleShip::Board&&) = delete;
 	BattleShip::Board& operator=(const BattleShip::Board&&) = delete;
-	void drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-	void drawSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-	void drawSubmarine(const BattleShip::point_t& center);
-    void drawShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat);
     void updateP1AttackGrid(const BattleShip::point_t& origin, const BattleShip::point_t& target, const BattleShip::army_t& boat);
     void updateP2AttackGrid(const BattleShip::point_t& origin, const BattleShip::point_t& target, const BattleShip::army_t& boat);
 
@@ -74,6 +70,14 @@ class BattleShip::Board {
                       std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& pAttackGrid);
         std::string getStringBoard(const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& defencegrid, 
                                    const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& attackgrid) const;
+        void drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+	    void drawSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+	    void drawSubmarine(const BattleShip::point_t& center);
+        void drawShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat);
+        void emptyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+	    void emptySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+	    void emptySubmarine(const BattleShip::point_t& center);
+        void emptyShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat);
 };
 
 #endif // BOARD_H_

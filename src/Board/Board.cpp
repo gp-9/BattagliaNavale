@@ -45,6 +45,51 @@ void BattleShip::Board::drawSubmarine(const BattleShip::point_t& center) {
 	p1DefenceGrid[center.xPos-1][center.yPos-1] = SUBMARINEUNIT;
 }
 
+void BattleShip::Board::emptyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+	// tutte e due le coordinate vanno decremenetate dato che partono da 1 e l'array invece parte da 0
+	if(direction == BattleShip::northsouth) {
+		for(int i=-2; i < 3; i++) {
+			p1DefenceGrid[center.xPos-1+i][center.yPos-1] = EMPTY;
+		}
+	} else {
+		for(int i=-2; i < 3; i++) {
+			p1DefenceGrid[center.xPos-1][center.yPos-1+i] = EMPTY;
+		}
+	}
+}
+
+void BattleShip::Board::emptySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+	// tutte e due le coordinate vanno decremenetate dato che partono da 1 e l'array invece parte da 0
+	if(direction == BattleShip::northsouth) {
+		for(int i=-1; i < 2; i++) {
+			p1DefenceGrid[center.xPos-1+i][center.yPos-1] = EMPTY;
+		}
+	} else {
+		for(int i=-1; i < 2; i++) {
+			p1DefenceGrid[center.xPos-1][center.yPos-1+i] = EMPTY;
+		}
+	}
+}
+
+void BattleShip::Board::emptySubmarine(const BattleShip::point_t& center) {
+	// Il sottomarino ha dimensione 1
+	p1DefenceGrid[center.xPos-1][center.yPos-1] = EMPTY;
+}
+
+void BattleShip::Board::emptyShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
+    switch(boat) {
+        case BattleShip::ironclad:
+			drawIronclad(center, direction);
+            break;
+        case BattleShip::support:
+			drawSupport(center, direction);
+            break;
+        case BattleShip::submarine:
+			drawSubmarine(center);
+            break;
+    }
+}
+
 void BattleShip::Board::drawShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat) {
     switch(boat) {
         case BattleShip::ironclad:
