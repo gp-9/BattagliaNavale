@@ -11,5 +11,5 @@ BattleShip::Ironclad::Ironclad(const BattleShip::point_t& origin, const BattleSh
 }
 
 bool BattleShip::Ironclad::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board){
-    
+    board.hitBoard(target, board.getP2DefenceGrid(), board.getP1AttackGrid());
 }
