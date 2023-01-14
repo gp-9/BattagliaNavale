@@ -8,16 +8,17 @@
 #include "../include/Utils/Utils.h"
 #include "../include/Army/Army.h"
 #include "../include/Board/Board.h"
+#include "../include/Bot/Bot.h"
 
 
 static void printTitle();
 std::string eval(const std::string& input, BattleShip::Board& board);
-std::string setupBoard(const std::string& input, BattleShip::Board& board, const BattleShip::army_t& boat, const BattleShip::player_t& player);
-std::string addBotArmy(BattleShip::Board& board, const BattleShip::player_t& player);
+std::string setupBoard(const std::string& input, BattleShip::Board& board, const BattleShip::army_t& boat, const BattleShip::nplayer_t& player);
+std::string addBotArmy(BattleShip::Board& board, const BattleShip::nplayer_t& player);
 
 int main (int argc, char *argv[]) {
     BattleShip::match_t typeofmatch;
-    BattleShip::Board *gameBoard = BattleShip::Board::instance();
+    BattleShip::Board gameBoard;
 
     if (argc == 1) {
         printTitle();
@@ -81,26 +82,29 @@ int main (int argc, char *argv[]) {
                 break;
             } else {
                 try {
-                    output << setupBoard(line, *gameBoard, boat, BattleShip::p1) << prompt;
-                    currIronclad = gameBoard->getCurrP1Iroclad();
-                    currSupport = gameBoard->getCurrP1Support();
-                    currSubmarine = gameBoard->getCurrP1Submarine();
+                    output << setupBoard(line, gameBoard, boat, BattleShip::p1) << prompt;
+                    currIronclad = gameBoard.getCurrP1Iroclad();
+                    currSupport = gameBoard.getCurrP1Support();
+                    currSubmarine = gameBoard.getCurrP1Submarine();
                 } catch(const std::invalid_argument& e) {
                     output << e.what() << ". Perfavore reinserire il comando\n" << errorprompt;
                 }
             }
         }
 
-		std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
-		output.str("");
-		//addBotArmy(*gameBoard, BattleShip::p2);
+        if(!exited) {
+            std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
+            output.str("");
+            //addBotArmy(gameBoard, BattleShip::p2);
+            //BattleShip::Bot p2 {gameBoard, BattleShip::p2};
+        }
 
         while(!exited) {
 			bool done = false;
 			if(startturn) {
 				while(!done) {
 					try {
-						eval(output.str(), *gameBoard);
+						eval(output.str(), gameBoard);
 						done = true;
 					} catch(const std::invalid_argument& e) {
 					}
@@ -113,7 +117,7 @@ int main (int argc, char *argv[]) {
 					break;
 				} else {
 					try {
-						output << eval(line, *gameBoard) << prompt;
+						output << eval(line, gameBoard) << prompt;
 					} catch(const std::invalid_argument& e) {
 						output << e.what() << ". Perfavore reinserire il comando\n" << errorprompt;
 					}
@@ -127,7 +131,7 @@ int main (int argc, char *argv[]) {
 					break;
 				} else {
 					try {
-						output << eval(line, *gameBoard) << prompt;
+						output << eval(line, gameBoard) << prompt;
 					} catch(const std::invalid_argument& e) {
 						output << e.what() << ". Perfavore reinserire il comando\n" << errorprompt;
 					}
@@ -136,7 +140,7 @@ int main (int argc, char *argv[]) {
 				}
 				while(!done) {
 					try {
-						eval(output.str(), *gameBoard);
+						eval(output.str(), gameBoard);
 						done = true;
 					} catch(const std::invalid_argument& e) {
 					}
@@ -146,8 +150,8 @@ int main (int argc, char *argv[]) {
         }
     } else {
         std::cout << "Giocando partita Computer vs Computer\n";
-		//addBotArmy(*gameBoard, BattleShip::p1);
-		//addBotArmy(*gameBoard, BattleShip::p2);
+		//addBotArmy(gameBoard, BattleShip::p1);
+		//addBotArmy(gameBoard, BattleShip::p2);
 		if(startturn) {
 		} else {
 		}
@@ -173,7 +177,7 @@ static void printTitle() {
 
 }
 
-std::string addBotArmy(BattleShip::Board& board, const BattleShip::player_t& player) {
+std::string addBotArmy(BattleShip::Board& board, const BattleShip::nplayer_t& player) {
 	std::random_device rnd;
 	std::mt19937 rng(rnd());
 	std::uniform_int_distribution<std::mt19937::result_type> randomletter(65, 76);
@@ -222,7 +226,7 @@ bool checkIsCommand(const std::vector<std::string>& input, const char c) {
     return false;
 }
 
-std::string setupBoard(const std::string& input, BattleShip::Board& board, const BattleShip::army_t& boat, const BattleShip::player_t& player) {
+std::string setupBoard(const std::string& input, BattleShip::Board& board, const BattleShip::army_t& boat, const BattleShip::nplayer_t& player) {
     std::vector<std::string> tokens = Utils::split(Utils::trim(input), " ");
     std::string output = "";
     if(tokens.size() != 2) throw std::invalid_argument("Comando non valido");

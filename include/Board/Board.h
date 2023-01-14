@@ -4,6 +4,7 @@
 #include <string>
 #include "../BattleShip.h"
 #include "../Army/Army.h"
+#include "Grid/Grid.h"
 
 #define SPACESIZE 10
 #define IRONCLAD 3
@@ -17,7 +18,6 @@
 #define SUBMARINEUNIT 'E'
 
 class BattleShip::Board {
-    static BattleShip::Board* _board;
     std::array<std::array<char, GRIDSIZE>, GRIDSIZE> p1DefenceGrid {};
     std::array<std::array<char, GRIDSIZE>, GRIDSIZE> p1AttackGrid {};
     std::array<std::array<char, GRIDSIZE>, GRIDSIZE> p2DefenceGrid {};
@@ -34,8 +34,6 @@ class BattleShip::Board {
     BattleShip::Board& operator=(const BattleShip::Board&) = delete;
 	Board(const BattleShip::Board&&) = delete;
 	BattleShip::Board& operator=(const BattleShip::Board&&) = delete;
-    Board() {}
-    ~Board() {}
 	void drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
 	void drawSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
 	void drawSubmarine(const BattleShip::point_t& center);
@@ -44,7 +42,8 @@ class BattleShip::Board {
     void updateP2AttackGrid(const BattleShip::point_t& origin, const BattleShip::point_t& target, const BattleShip::army_t& boat);
 
     public:
-        static BattleShip::Board* instance();
+        Board() {}
+        ~Board();
         inline const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& getP1AttackGrid() const { return p1AttackGrid; }
         inline const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& getP2AttackGrid() const { return p2AttackGrid; }
         inline const std::array<std::array<char, GRIDSIZE>, GRIDSIZE>& getP1DefenceGrid() const { return p1DefenceGrid; }

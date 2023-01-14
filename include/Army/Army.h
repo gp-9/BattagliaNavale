@@ -27,6 +27,7 @@ class BattleShip::Army {
 
     public:
         virtual bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board) = 0;
+        virtual ~Army() {}
 
     protected:
         Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::Board& board) {}
