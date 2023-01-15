@@ -2,6 +2,8 @@
 #define BATTLESHIP_H_
 #include <cstdint>
 
+#define NPLAYER 2
+
 namespace BattleShip {
     typedef enum { pc, cc } match_t;
     typedef enum { northsouth, eastwest } direction_t;

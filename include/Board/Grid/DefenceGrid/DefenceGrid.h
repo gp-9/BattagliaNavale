@@ -21,9 +21,6 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
     int _currSupport;
     int _currSubmarine;
     bool _settingup = true;
-    void drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-    void drawSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-    void drawSubmarine(const BattleShip::point_t& center);
     bool checkIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) const;
     bool checkSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) const;
     bool checkSubmarine(const BattleShip::point_t& center) const;
@@ -34,7 +31,6 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
     bool checkSupportDestroyed(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
     bool checkSubmarineDestroyed(const BattleShip::point_t& center);
     bool checkHit(const BattleShip::point_t& target) const;
-    inline void startGame() { if(_currIronclad == IRONCLAD && _currSupport == SUPPORT && _currSubmarine == SUBMARINE) _settingup = false; }
 
     public:
         DefenceGrid();
@@ -42,14 +38,21 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
         inline int getIronclad() const { return _currIronclad; }
         inline int getSupport() const { return _currSupport; }
         inline int getSubmarine() const { return _currSubmarine; }
+        void drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+        void drawSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+        void drawSubmarine(const BattleShip::point_t& center);
         bool checkPosition(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army) const;
         bool hitPosition(const BattleShip::point_t& target);
         void addIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSubmarine(const BattleShip::point_t& center);
-        void destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-        void destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-        void destroySubmarine(const BattleShip::point_t& center);
+        bool destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+        bool destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+        bool destroySubmarine(const BattleShip::point_t& center);
+        bool isShip(const BattleShip::point_t& point) const { return Grid::getGridPosition(point); }
+        const std::array<std::array<BattleShip::point_t, 3>, 3> getSupportSurrounds(const BattleShip::point_t& center) const;
+        const std::array<std::array<char, 5>, 5> getSonarSurrounds(const BattleShip::point_t& center) const;
+        inline bool startGame() { if(_currIronclad == IRONCLAD && _currSupport == SUPPORT && _currSubmarine == SUBMARINE) _settingup = false; return !_settingup;}
         inline bool matchTermianted() const { return (!_settingup && _currIronclad == 0 && _currSupport == 0 && _currSubmarine == 0); }
 
 };

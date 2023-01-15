@@ -10,6 +10,14 @@ bool BattleShip::AttackGrid::hitPosition(const BattleShip::point_t& target, cons
     return false;
 }
 
+void BattleShip::AttackGrid::sonar(const BattleShip::point_t& target, const std::array<std::array<char, 5>, 5>& surrounds) {
+    for(int x = -2; x < 3; x++) {
+        for(int y = -2; y < 3; y++) {
+            if(surrounds[x][y]) Grid::modifyGrid({target.xPos + x, target.yPos + y}, DISCOVERED);
+        }
+    }
+}
+
 void BattleShip::AttackGrid::resetActions(const char action) {
     for(std::uint32_t y = 0; y < GRIDSIZE; y++) {
         for(std::uint32_t x = 0; x < GRIDSIZE; x++) {

@@ -191,38 +191,73 @@ void BattleShip::DefenceGrid::addSubmarine(const BattleShip::point_t& center) {
     } else throw std::invalid_argument("Posizione non valida per un sottomarino");
 }
 
-void BattleShip::DefenceGrid::destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+bool BattleShip::DefenceGrid::destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
     for(int i = 0; i < IRONCLAD; i++) {
         if(_ironcladCenters[i].xPos == center.xPos && _ironcladCenters[i].yPos == center.yPos) {
             if(checkIroncladDestroyed(center, direction)) {
                 deleteIronclad(center, direction);
-                _ironcladCenters[i] = {};
+                _ironcladCenters[i] = {GRIDSIZE, GRIDSIZE};
                 _currIronclad--;
+                return true;
             }
         }
     }
+    return false;
 }
 
-void BattleShip::DefenceGrid::destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
+bool BattleShip::DefenceGrid::destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
     for(int i = 0; i < SUPPORT; i++) {
         if(_supportCenters[i].xPos == center.xPos && _supportCenters[i].yPos == center.yPos) {
             if(checkSupportDestroyed(center, direction)) {
                 deleteSupport(center, direction);
-                _supportCenters[i] = {};
+                _supportCenters[i] = {GRIDSIZE, GRIDSIZE};
                 _currSupport--;
+                return true;
             }
         }
     }
+    return false;
 }
 
-void BattleShip::DefenceGrid::destroySubmarine(const BattleShip::point_t& center) {
+bool BattleShip::DefenceGrid::destroySubmarine(const BattleShip::point_t& center) {
     for(int i = 0; i < SUBMARINE; i++) {
         if(_submarineCenters[i].xPos == center.xPos && _submarineCenters[i].yPos == center.yPos) {
             if(checkSubmarineDestroyed(center)) {
                 deleteSubmarine(center);
-                _submarineCenters[i] = {};
+                _submarineCenters[i] = {GRIDSIZE, GRIDSIZE};
                 _currSubmarine--;
+                return true;
             }
         }
     }
+    return false;
+}
+
+
+const std::array<std::array<BattleShip::point_t, 3>, 3> BattleShip::DefenceGrid::getSupportSurrounds(const BattleShip::point_t& center) const {
+    std::array<std::array<BattleShip::point_t, 3>, 3> surrounds {};
+    for(int i = -1; i < 2; i++) {
+        for(int j = -1; j < 2; j++) {
+            if(center.xPos + i < 0 || center.xPos + i >= GRIDSIZE || center.yPos + j < 0 || center.yPos + j >= GRIDSIZE) {
+                surrounds[i+1][j+1] = {GRIDSIZE, GRIDSIZE};
+            } else {
+                surrounds[i+1][j+1] = {center.xPos + i, center.yPos + j};
+            }
+        }
+    }
+    return surrounds;
+}
+
+const std::array<std::array<char, 5>, 5> BattleShip::DefenceGrid::getSonarSurrounds(const BattleShip::point_t& center) const {
+    std::array<std::array<char, 5>, 5> surrounds {};
+    for(int i = -2; i < 3; i++) {
+        for(int j = -2; j < 3; j++) {
+            if(center.xPos + i < 0 || center.xPos + i >= GRIDSIZE || center.yPos + j < 0 || center.yPos + j >= GRIDSIZE) {
+                surrounds[i+2][j+2] = 0;
+            } else {
+                surrounds[i+2][j+2] = Grid::getGridPosition({center.xPos + i, center.yPos + j});
+            }
+        }
+    }
+    return surrounds;
 }

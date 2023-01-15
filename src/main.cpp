@@ -60,7 +60,7 @@ int main (int argc, char *argv[]) {
     bool exited = false;
     std::ofstream myFile;
     myFile.open("../logFiles/pcLogFile.txt");
-    if(typeofmatch == BattleShip::pc) {
+    if(typeofmatch == BattleShip::pc && myFile.is_open()) {
         const static std::string prompt = "\033[36;1m>\033[35;1m>\033[0m ";
         const static std::string errorprompt = "\033[31;1m>>\033[0m ";
         std::string line;
@@ -162,8 +162,7 @@ int main (int argc, char *argv[]) {
 					}
 				}
 			}
-            
-			done = false;
+		    done = false;
         }
         
     myFile.close();
