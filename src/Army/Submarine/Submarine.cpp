@@ -13,3 +13,12 @@ BattleShip::Submarine::Submarine(const BattleShip::point_t& origin, const Battle
 bool BattleShip::Submarine::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board, const BattleShip::nplayer_t& player){
     board.makeAction(origin, target, player);
 }
+
+bool BattleShip::Ironclad::is_in_army(const BattleShip::point_t& coords){
+
+    if(coords.xPos == this->center.xPos && coords.yPos == this->center.yPos)
+        return true;
+    else 
+        return false;
+
+}

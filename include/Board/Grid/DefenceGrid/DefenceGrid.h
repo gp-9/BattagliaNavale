@@ -6,12 +6,16 @@
 #define IRONCLAD 3
 #define SUPPORT 3
 #define SUBMARINE 2
+#define IRONCLADARMOR 5
+#define SUPPORTARMOR 3
+#define SUBMARINEARMOR 1
 #define IRONCLADUNIT 'C'
 #define SUPPORTUNIT 'S'
 #define SUBMARINEUNIT 'E'
 #define IRONCLADDAMAGE 'c'
 #define SUPPORTDAMAGE 's'
 #define SUBMARINEDAMAGE 'e'
+
 
 class BattleShip::DefenceGrid : public BattleShip::Grid {
     std::array<BattleShip::point_t, IRONCLAD> _ironcladCenters;
