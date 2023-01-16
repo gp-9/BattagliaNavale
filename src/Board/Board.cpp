@@ -19,7 +19,7 @@ void BattleShip::Board::addArmy(const BattleShip::nplayer_t& player, const Battl
     switch(boat) {
         case BattleShip::ironclad:
             try {
-                _armies[_defenceGrids[player]->getIronclad()][player] = std::make_unique<BattleShip::Ironclad>(center, direction, *this);
+                _armies[_defenceGrids[player]->getIronclad()][player] = std::make_unique<BattleShip::Ironclad>(center, direction, *this, player);
                 _defenceGrids[player]->addIronclad(center, direction);
             } catch(const std::invalid_argument& e) {
                 throw;
@@ -27,7 +27,7 @@ void BattleShip::Board::addArmy(const BattleShip::nplayer_t& player, const Battl
         break;
         case BattleShip::support:
             try {
-                _armies[IRONCLAD+_defenceGrids[player]->getSupport()][player] = std::make_unique<BattleShip::Support>(center, direction, *this);
+                _armies[IRONCLAD+_defenceGrids[player]->getSupport()][player] = std::make_unique<BattleShip::Support>(center, direction, *this, player);
                 _defenceGrids[player]->addSupport(center, direction);
             } catch(const std::invalid_argument& e) {
                 throw;
@@ -35,7 +35,7 @@ void BattleShip::Board::addArmy(const BattleShip::nplayer_t& player, const Battl
         break;
         case BattleShip::submarine:
             try {
-                _armies[IRONCLAD+SUPPORT+_defenceGrids[player]->getSubmarine()][player] = std::make_unique<BattleShip::Submarine>(center, direction, *this);
+                _armies[IRONCLAD+SUPPORT+_defenceGrids[player]->getSubmarine()][player] = std::make_unique<BattleShip::Submarine>(center, direction, *this, player);
                 _defenceGrids[player]->addSubmarine(center);
             } catch(const std::invalid_argument& e) {
                 throw;
@@ -60,20 +60,11 @@ bool BattleShip::Board::makeAction(const BattleShip::point_t& origin, const Batt
                     if(_defenceGrids[(player+1)%NPLAYER]->hitPosition(target)) {
                         _attackGrids[player]->hitPosition(target, HIT);
                         for(int j = 0; j < TOTALARMYCOUNT; j++) {
-                            std::unique_ptr<BattleShip::Army> boat = _armies[j][(player+1)&NPLAYER]
+                            std::unique_ptr<BattleShip::Army> boat = _armies[j][(player+1)%NPLAYER]
                             if(boat->hasPoint(target)) {
-                                swtich(baot->getType()) {
-                                    case BattleShip::ironclad:
-                                        _defenceGrids[(player+1)%NPLAYER]->destroyIronclad(baot->getCenter(), boat->getDirection());
-                                    break;
-                                    case BattleShip::support:
-                                        _defenceGrids[(player+1)%NPLAYER]->destroySupport(baot->getCenter(), boat->getDirection());
-                                    break;
-                                    case BattleShip::submarine:
-                                        _defenceGrids[(player+1)%NPLAYER]->destroySubmarine(baot->getCenter());
-                                    break;
-                                }
+                                _defenceGrids[(player+1)%NPLAYER]->destroyShip(baot->getCenter(), boat->getDirection(), boat->getType());
                                 boat->destroy();
+                                break;
                             }
                         }
                     } else _attackGrids[player]->hitPosition(target, MISS);
@@ -88,16 +79,8 @@ bool BattleShip::Board::makeAction(const BattleShip::point_t& origin, const Batt
                             for(BattleShip::point_t y : x) {
                                 for(int j = 0; j < TOTALARMYCOUNT; j++) {
                                     if(_armies[j][player]->getType() != BattleShip::support && _armies[j][player]->isDamaged() && _armies[j][player]->hasPoint(y)) {
-                                        switch(_armies[j][player]->getType()) {
-                                            case BattleShip::ironclad:
-                                                _defenceGrids[player]->drawIronclad(_armies[j][player]->getCenter(), _armies[j][player]->getDirection());
-                                            break;
-                                            case BattleShip::support:
-                                                _defenceGrids[player]->drawSupport(_armies[j][player]->getCenter(), _armies[j][player]->getDirection());
-                                            break;
-                                            case BattleShip::submarine:
-                                            break;
-                                        }
+                                        _defenceGrids[player]->healShip(_armies[j][player]->getCenter(), _armies[j][player]->getDirection(), _armies[j][player]->getType());
+                                        _armies[j][player]->heal();
                                     }
                                 }
                             }

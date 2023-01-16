@@ -32,16 +32,41 @@ add_library(Board
     include/Board/Board.h
     src/Board/Board.cpp)
 
+add_library(Grid
+    include/Board/Grid/Grid.h
+    src/Board/Grid/Grid.cpp)
+
+add_library(AttackGrid
+    include/Board/Grid/AttackGrid/AttackGrid.h
+    src/Board/Grid/AttackGrid/AttackGrid.cpp)
+
+add_library(DefenceGrid
+    include/Board/Grid/DefenceGrid/DefenceGrid.h
+    src/Board/Grid/DefenceGrid/DefenceGrid.cpp)
+
+add_library(Prompt
+    include/Prompt/Prompt.h
+    src/Prompt/Prompt.cpp)
+
 add_executable(battaglia_navale
     src/main.cpp)
 
 set_target_properties(BattleShip PROPERTIES LINKER_LANGUAGE CXX)
 
-target_link_libraries(battaglia_navale
-    Utils
-    Board
+target_link_libraries(Board
+    Grid
+    AttackGrid
+    DefenceGrid
     BattleShip
     Army
     Ironclad
     Support
     Submarine)
+
+target_link_libraries(Prompt
+    Board
+    Utils
+    BattleShip)
+
+target_link_libraries(battaglia_navale
+    Prompt)

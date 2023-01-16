@@ -34,6 +34,9 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
     bool checkIroncladDestroyed(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
     bool checkSupportDestroyed(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
     bool checkSubmarineDestroyed(const BattleShip::point_t& center);
+    bool destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+    bool destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+    bool destroySubmarine(const BattleShip::point_t& center);
     bool checkHit(const BattleShip::point_t& target) const;
 
     public:
@@ -50,9 +53,8 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
         void addIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSubmarine(const BattleShip::point_t& center);
-        bool destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-        bool destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-        bool destroySubmarine(const BattleShip::point_t& center);
+        bool destroyShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army);
+        void healShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army);
         bool isShip(const BattleShip::point_t& point) const { return Grid::getGridPosition(point); }
         const std::array<std::array<BattleShip::point_t, 3>, 3> getSupportSurrounds(const BattleShip::point_t& center) const;
         const std::array<std::array<char, 5>, 5> getSonarSurrounds(const BattleShip::point_t& center) const;

@@ -6,9 +6,9 @@
 #include <sstream>
 #include "../BattleShip.h"
 #include "../Army/Army.h"
-#include "../../include/Army/Ironclad/Ironclad.h"
-#include "../../include/Army/Support/Support.h"
-#include "../../include/Army/Submarine/Submarine.h"
+#include "../Army/Ironclad/Ironclad.h"
+#include "../Army/Support/Support.h"
+#include "../Army/Submarine/Submarine.h"
 #include "Grid/Grid.h"
 #include "Grid/AttackGrid/AttackGrid.h"
 #include "Grid/DefenceGrid/DefenceGrid.h"
@@ -38,6 +38,9 @@ class BattleShip::Board {
         void addArmy(const BattleShip::nplayer_t& player, const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& boat);
         bool checkPosition(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army, const BattleShip::nplayer_t& player) const;
         bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, const BattleShip::nplayer_t& player);
+        inline int getCurrIronclad(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->getIronclad(); }
+        inline int getCurrSupport(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->getSupport(); }
+        inline int getCurrSubmarine(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->getSubmarine(); }
         inline bool isPlayerSetup(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->startGame(); }
         inline bool isGameStarted() const { return _defenceGrids[BattleShip::p1]->startGame() && _defenceGrids[BattleShip::p2]->startGame(); }
         inline bool isGameOver() const { return _defenceGrids[BattleShip::p1]->matchTermianted() || _defenceGrids[BattleShip::p2]->matchTermianted(); }

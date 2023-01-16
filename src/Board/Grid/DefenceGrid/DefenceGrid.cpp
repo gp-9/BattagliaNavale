@@ -233,6 +233,33 @@ bool BattleShip::DefenceGrid::destroySubmarine(const BattleShip::point_t& center
     return false;
 }
 
+bool BattleShip::DefenceGrid::destroyShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army) {
+    switch(army) {
+        case BattleShip::ironclad:
+            return destroyIronclad(center, direction);
+        break;
+        case BattleShip::support:
+            return destroySupport(center, direction);
+        break;
+        case BattleShip::submarine:
+            return destroySubmarine(center);
+        break;
+    }
+}
+
+void BattleShip::DefenceGrid::healShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army) {
+    switch(army) {
+        case BattleShip::ironclad:
+            drawIronclad(center, direction);
+        break;
+        case BattleShip::support:
+            drawSupport(center, direction);
+        break;
+        case BattleShip::submarine:
+        break;
+    }
+}
+
 
 const std::array<std::array<BattleShip::point_t, 3>, 3> BattleShip::DefenceGrid::getSupportSurrounds(const BattleShip::point_t& center) const {
     std::array<std::array<BattleShip::point_t, 3>, 3> surrounds {};
