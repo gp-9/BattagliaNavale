@@ -26,11 +26,11 @@ bool BattleShip::Support::makeAction(const BattleShip::point_t& origin, const Ba
     board.makeAction(origin, target, player);
 }
 
-void BattleShip::Ironclad::armor_restore(){
+void BattleShip::Support::armor_restore(){
     this->armor = SUPPORTARMOR;    
 }
 
-bool BattleShip::Ironclad::is_in_army(const BattleShip::point_t& coords){
+bool BattleShip::Support::is_in_army(const BattleShip::point_t& coords){
     for (int i = 0; i < SUPPORTUNIT; i++)
     {
         if(coords.xPos == coords_position[i].xPos && coords.yPos == coords_position[i].yPos)
