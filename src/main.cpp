@@ -54,11 +54,11 @@ int main (int argc, char *argv[]) {
     std::ofstream myFile;
     myFile.open("../logFiles/pcLogFile.txt");
     if(typeofmatch == BattleShip::pc && myFile.is_open()) {
-        exited = prompt.setUpBoardHuman(BattleShip::p1); 
+        exited = prompt.setUpBoardHuman(BattleShip::p1, myFile); 
 
         if(!exited) {
             std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
-            prompt.setUpBoardBot(BattleShip::p2);
+            prompt.setUpBoardBot(BattleShip::p2, myFile);
         }
 
         while(!exited) {

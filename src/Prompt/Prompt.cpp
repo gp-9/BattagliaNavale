@@ -1,4 +1,7 @@
 #include "../../include/Prompt/Prompt.h"
+#include <fstream>
+#include <unistd.h>
+#include <string>
 
 const std::string BattleShip::Prompt::_prompt = "\033[36;1m>\033[35;1m>\033[0m ";
 const std::string BattleShip::Prompt::_errorprompt = "\033[31;1m>>\033[0m ";
@@ -160,7 +163,8 @@ void BattleShip::Prompt::evalBot(const std::string& input, const BattleShip::npl
     target.yPos = std::stoi(tokens[1].substr(1));
 }
 
-bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player) {
+bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player, std::ofstream& myFile) {
+
     output << _prompt;
     while(!_board.isPlayerSetup(player)) {
         BattleShip::army_t boat;
@@ -178,14 +182,14 @@ bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player) {
         output.str("");
         if(!std::getline(std::cin, _line)) {
             
-            //myFile << line << std::endl;
+            myFile << _line << std::endl;
             std::cout << "\nUscendo dal prompt di Battaglia Navale" << std::endl;
             resetCount();
             output.str("");
             return true;
         } else {
 
-            //myFile << line << std::endl;
+            myFile << _line << std::endl;
             try {   
                 output << setupBoard(_line, boat, player) << _prompt;
                 _currIronclad = _board.getCurrIronclad(player);
@@ -201,7 +205,51 @@ bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player) {
     return false;
 }
 
-bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player) {
+bool BattleShip::Prompt::setUpBoardHumanForReplay(const BattleShip::nplayer_t& player, std::ifstream& myFile) {
+
+    output << _prompt;
+    while(!_board.isPlayerSetup(player)) {
+        BattleShip::army_t boat;
+        if(_currIronclad < IRONCLAD) {
+            boat = BattleShip::ironclad;
+            output << "Quali sono le coordinate per la corazzata " << (_currIronclad + 1) << '\n' << _prompt;
+        } else if(_currSupport < SUPPORT) {
+            boat = BattleShip::support;
+            output << "Quali sono le coordinate per la nave di supporto " << (_currSupport + 1) << '\n' << _prompt;
+        } else if(_currSubmarine < SUBMARINE) {
+            boat = BattleShip::submarine;
+            output << "Quali sono le coordinate per il sottomarino " << (_currSubmarine + 1) << '\n' << _prompt;
+        }
+        std::cout << output.str();
+        output.str("");
+        if(!std::getline(myFile, _line)) {
+            std::cout << _line << std::endl;
+            std::cout << "\nUscendo dal prompt di Battaglia Navale" << std::endl;
+            resetCount();
+            output.str("");
+            return true;
+        } else {
+            std::cout << _line << std::endl;
+            try {   
+                output << setupBoard(_line, boat, player) << _prompt;
+                _currIronclad = _board.getCurrIronclad(player);
+                _currSupport = _board.getCurrSupport(player);
+                _currSubmarine = _board.getCurrSubmarine(player);
+                std::cout << _board.getPlayerStringBoard(player) + '\n';
+                unsigned int microsecond = 1000000;
+                usleep(1 * microsecond);            //sleeps for 1 second
+            } catch(const std::invalid_argument& e) {
+                output << e.what() << ". Perfavore reinserire il comando\n" << _errorprompt;
+            }
+        }
+
+    }
+    resetCount();
+    output.str("");
+    return false;
+}
+
+bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player, std::ofstream& myFile) {
 	std::random_device rnd;
 	std::mt19937 rng(rnd());
 	std::uniform_int_distribution<std::mt19937::result_type> randomletter(65, 76);
@@ -221,7 +269,7 @@ bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player) {
             _currIronclad = _board.getCurrIronclad(player);
             _currSupport = _board.getCurrSupport(player);
             _currSubmarine = _board.getCurrSubmarine(player);
-            //myFile << output.str() << std::endl;
+            myFile << output.str() << std::endl;
         } catch(const std::invalid_argument& e) {
         }
         output.str("");
@@ -231,6 +279,37 @@ bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player) {
     return false;
 }
 
+bool BattleShip::Prompt::setUpBoardBotForReplay(const BattleShip::nplayer_t& player, std::ifstream& myFile) {
+	std::random_device rnd;
+	std::mt19937 rng(rnd());
+	std::uniform_int_distribution<std::mt19937::result_type> randomletter(65, 76);
+	std::uniform_int_distribution<std::mt19937::result_type> randomnumber(1, 12);
+    while(!_board.isPlayerSetup(player)) {
+        BattleShip::army_t boat;
+        if(_currIronclad < IRONCLAD) {
+            boat = BattleShip::ironclad;
+        } else if(_currSupport < SUPPORT) {
+            boat = BattleShip::support;
+        } else if(_currSubmarine < SUBMARINE) {
+            boat = BattleShip::submarine;
+        }
+        output << static_cast<char>(randomletter(rng)) << randomnumber(rng) << " " << static_cast<char>(randomletter(rng)) << randomnumber(rng);
+        try {   
+            std::string line;
+            getline(myFile, line);
+            setupBoard(line, boat, player);
+            _currIronclad = _board.getCurrIronclad(player);
+            _currSupport = _board.getCurrSupport(player);
+            _currSubmarine = _board.getCurrSubmarine(player);
+            std::cout << _board.getPlayerStringBoard(player) + '\n';
+        } catch(const std::invalid_argument& e) {
+        }
+        output.str("");
+    }
+    resetCount();
+    output.str("");
+    return false;
+}
 bool BattleShip::Prompt::playGame(const BattleShip::nplayer_t& player1, const BattleShip::player_t& player1type, const BattleShip::nplayer_t& player2, const BattleShip::player_t& player2type, int starter) {
     if(!_board.isGameStarted()) throw std::invalid_argument("I giocatori devono ancora finire di posizionare le navi");
     std::array<BattleShip::nplayer_t, NPLAYER> turns {};
