@@ -43,9 +43,9 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
     public:
         DefenceGrid();
         ~DefenceGrid() {}
-        inline int getIronclad() const { return this->_currIronclad; }
-        inline int getSupport() const { return this->_currSupport; }
-        inline int getSubmarine() const { return this->_currSubmarine; }
+        inline int getIronclad() const { return _currIronclad; }
+        inline int getSupport() const { return _currSupport; }
+        inline int getSubmarine() const { return _currSubmarine; }
         void drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void drawSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void drawSubmarine(const BattleShip::point_t& center);

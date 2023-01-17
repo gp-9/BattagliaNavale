@@ -23,14 +23,14 @@ class BattleShip::Board {
     // Matrice di pointer alle navi, la stessa coordinata in TOTALARMYCOUNT indica la stessa n-esima nave dei giocatori
     // a cui si fa l'accesso tramite l'enum nplayer_t, che avendo valori da 0 al massimo numero di giocatori, viene usato come offset per 
     // determinare di quale giocatore sia l'unita' n
-    std::array<std::array<std::unique_ptr<BattleShip::Army>, NPLAYER>, TOTALARMYCOUNT> _armies = {nullptr};
+    std::array<std::array<std::unique_ptr<BattleShip::Army>, NPLAYER>, TOTALARMYCOUNT> _armies;
     Board(const BattleShip::Board&) = delete;
     BattleShip::Board& operator=(const BattleShip::Board&) = delete;
 	Board(const BattleShip::Board&&) = delete;
 	BattleShip::Board& operator=(const BattleShip::Board&&) = delete;
 
     public:
-        Board() {}
+        Board();
         ~Board() {}
 		void resetHitsAttackGrid(const BattleShip::nplayer_t& player);
 		void resetMissAttackGrid(const BattleShip::nplayer_t& player);

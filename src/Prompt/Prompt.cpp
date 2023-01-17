@@ -10,13 +10,11 @@ BattleShip::Prompt::Prompt()
     : _currIronclad {0}, _currSupport {0}, _currSubmarine {0} {}
 
 bool checkFirstElement(const std::string& input) {
-    if((input[0] < 0x4d && input[0] > 0x40) || (input[0] > 0x60 && input[0] < 0x6d)) return true;
-    return false;
+    return (input[0] < 0x4d && input[0] > 0x40) || (input[0] > 0x60 && input[0] < 0x6d);
 }
 
 bool checkIsCommand(const std::vector<std::string>& input, const char c) {
-    if(input[0][0] == c && input[1][0] == c) return true;
-    return false;
+    return input[0][0] == c && input[1][0] == c;
 }
 
 std::string BattleShip::Prompt::setupBoard(const std::string& input, const BattleShip::army_t& boat, const BattleShip::nplayer_t& player) {
@@ -193,7 +191,7 @@ bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player, st
         } else {
             
             auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            myFile << std::ctime(&now) << "| Giocatore " << player+1 << " ha fatto: " << _line << std::endl;
+            myFile << std::ctime(&now) << ": Giocatore " << player+1 << " ha fatto: " << _line << std::endl;
             try {   
                 output << setupBoard(_line, boat, player) << _prompt;
                 _currIronclad = _board.getCurrIronclad(player);

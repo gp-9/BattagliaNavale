@@ -3,11 +3,12 @@
 #include "../../../include/BattleShip.h"
 #include "../../../include/Board/Board.h"
 
-BattleShip::Support::Support(const BattleShip::point_t& origin, const BattleShip::direction_t& direction, const BattleShip::Board& board, const BattleShip::nplayer_t& player) 
-    : BattleShip::Army::Army(origin, direction, board, player) {
-    if(!board.checkPosition(origin, direction, BattleShip::army_t::support, player)) {
-        throw std::invalid_argument("Your support position is out of board or already taken!");
-    }else{
+//BattleShip::Support::Support(const BattleShip::point_t& origin, const BattleShip::direction_t& direction, const BattleShip::Board& board, const BattleShip::nplayer_t& player) 
+BattleShip::Support::Support(const BattleShip::point_t& origin, const BattleShip::direction_t& direction, const BattleShip::nplayer_t& player) 
+    : BattleShip::Army::Army(origin, direction, player) {
+    //if(!board.checkPosition(origin, direction, BattleShip::army_t::support, player)) {
+     //   throw std::invalid_argument("Your support position is out of board or already taken!");
+    //}else{
         if(direction == BattleShip::northsouth) {
         int count = 0;
         for(int i=-1; i < 2; i++) {
@@ -19,11 +20,11 @@ BattleShip::Support::Support(const BattleShip::point_t& origin, const BattleShip
             coords_position[count] = {center.xPos+i, center.yPos};
 		}
 	    }
-    }
+    //}
 }
 
 bool BattleShip::Support::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board, const BattleShip::nplayer_t& player){
-    board.makeAction(origin, target, player);
+    return board.makeAction(origin, target, player);
 }
 
 void BattleShip::Support::armor_restore(){

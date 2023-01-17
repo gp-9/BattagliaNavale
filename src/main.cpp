@@ -30,11 +30,13 @@ static void printTitle() {
 }
 
 int main(void) {
-    BattleShip::match_t typeofmatch;
-    BattleShip::Prompt prompt;
+    BattleShip::match_t typeofmatch = BattleShip::pc;
+    BattleShip::Prompt prompt {};
     std::string line = "";
+    std::string logDirectory = "../logFiles/";
     std::string filepath {};
     std::ofstream myFile;
+    /*
     std::cout << "\033[2J\033[H" << "\033[33;1mSelezionare il tipo di partita che si intende giocare\033[0m\n"
               << std::setw(53) << "\033[35;1m-> \033[34;1mPC\033[0m: Giocatore contro computer;\n"
               << std::setw(52) << "\033[35;1m-> \033[34;1mCC\033[0m: Computer contro computer;\n"
@@ -82,7 +84,7 @@ int main(void) {
                 std::time_t now = std::time(nullptr);
                 char timestr[100] = {};
                 std::strftime(timestr, sizeof(timestr), "%F", std::localtime(&now));
-                filepath = "../logFiles/" + std::string(timestr) + "_log.txt";
+                filepath = logDirectory + std::string(timestr) + "_log.txt";
                 myFile = std::ofstream(filepath);
                 myFile.open(filepath);
                 std::cout << "Il file " << filepath << " appena creato verra' usato per il logging dei comandi" << std::endl;
@@ -102,6 +104,7 @@ int main(void) {
         }
     }
     printTitle();
+    */
 
 	std::random_device rnd;
 	std::mt19937 rng(rnd());
@@ -110,11 +113,19 @@ int main(void) {
 	std::uniform_int_distribution<std::mt19937::result_type> randomletter(65, 76);
 	std::uniform_int_distribution<std::mt19937::result_type> randomnumber(1, 12);
     bool exited = false;
+    std::array<std::array<std::unique_ptr<BattleShip::Army>, NPLAYER>, TOTALARMYCOUNT> _armies;
+    for(int i = 0; i < IRONCLAD; i++) {
+        for(int j = 0; j < NPLAYER; j++) {
+            std::unique_ptr<BattleShip::Army> p (new BattleShip::Ironclad({0, 2}, BattleShip::eastwest, BattleShip::p1));
+            _armies[i][j] = std::move(p);
+        }
+    }
+
     if(typeofmatch == BattleShip::pc) {
-        //exited = prompt.setUpBoardHuman(BattleShip::p1, myFile); 
+        exited = prompt.setUpBoardHuman(BattleShip::p1, myFile); 
 
         if(!exited) {
-            //std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
+            std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
             //prompt.setUpBoardBot(BattleShip::p2, myFile);
         }
 

@@ -4,27 +4,30 @@
 #include "../../../include/Board/Board.h"
 
 
-BattleShip::Ironclad::Ironclad(const BattleShip::point_t& origin, const BattleShip::direction_t& direction, const BattleShip::Board& board, const BattleShip::nplayer_t& player) 
-    : BattleShip::Army::Army(origin, direction, board, player) {
-    if(!board.checkPosition(origin, direction, BattleShip::army_t::ironclad, player)) {
-        throw std::invalid_argument("Your ironclad position is out of board or already taken!");
-    }else{
+//BattleShip::Ironclad::Ironclad(const BattleShip::point_t& origin, const BattleShip::direction_t& direction, const BattleShip::Board& board, const BattleShip::nplayer_t& player) 
+BattleShip::Ironclad::Ironclad(const BattleShip::point_t& origin, const BattleShip::direction_t& direction, const BattleShip::nplayer_t& player) 
+    : BattleShip::Army::Army(origin, direction, player) {
+    //if(!board.checkPosition(origin, direction, BattleShip::army_t::ironclad, player)) {
+      //  throw std::invalid_argument("Your ironclad position is out of board or already taken!");
+    //}else{
         if(direction == BattleShip::northsouth) {
             int count = 0;
 		for(int i=-2; i < 3; i++) {
             coords_position[count] = {center.xPos+i, center.yPos};
+            count++;
 		}
 	    } else {
         int count = 0;
 		for(int i=-2; i < 3; i++) {
             coords_position[count] = {center.xPos+i, center.yPos};
+            count++;
 		}
 	    }
-    }
+    //}
 }
 
 bool BattleShip::Ironclad::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board, const BattleShip::nplayer_t& player){
-    board.makeAction(origin, target, player);
+    return board.makeAction(origin, target, player);
 }
 
 void BattleShip::Ironclad::armor_restore(){

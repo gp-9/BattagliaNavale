@@ -65,8 +65,7 @@ bool BattleShip::DefenceGrid::checkSupport(const BattleShip::point_t& center, co
 
 
 bool BattleShip::DefenceGrid::checkSubmarine(const BattleShip::point_t& center) const {
-    if(!Grid::getGridPosition(center)) return true;
-    return false;
+    return !Grid::getGridPosition(center);
 }
 
 
@@ -129,21 +128,20 @@ bool BattleShip::DefenceGrid::checkSupportDestroyed(const BattleShip::point_t& c
 }
 
 bool BattleShip::DefenceGrid::checkSubmarineDestroyed(const BattleShip::point_t& center) {
-    if(Grid::assertCharEq(center, SUBMARINEDAMAGE)) return true;
-    return false;
+    return Grid::assertCharEq(center, SUBMARINEDAMAGE);
 }
 
 bool BattleShip::DefenceGrid::checkPosition(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army) const {
     if((center.xPos >= 0 && center.xPos < GRIDSIZE) && (center.yPos >= 0 && center.yPos < GRIDSIZE)) {
         switch(army) {
             case BattleShip::ironclad:
-                checkIronclad(center, direction);
+                return checkIronclad(center, direction);
             break;
             case BattleShip::support:
-                checkSupport(center, direction);
+                return checkSupport(center, direction);
             break;
             case BattleShip::submarine:
-                checkSubmarine(center);
+                return checkSubmarine(center);
             break;
         }
     }

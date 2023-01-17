@@ -1,4 +1,12 @@
 #include "../../include/Board/Board.h"
+#include <iostream>
+
+BattleShip::Board::Board() {
+    for(int i = 0; i < NPLAYER; i++) {
+        _defenceGrids[i].reset(new BattleShip::DefenceGrid());
+        _attackGrids[i].reset(new BattleShip::AttackGrid());
+    }
+}
 
 void BattleShip::Board::resetHitsAttackGrid(const BattleShip::nplayer_t& player) {
     _attackGrids[player]->resetActions(HIT);
@@ -17,30 +25,34 @@ void BattleShip::Board::addArmy(const BattleShip::nplayer_t& player, const Battl
     // di questa parte vi si accede tramite il numero di navi che si hanno
     // *this da rimuover in seguito, visto che bisogna rifare le classi delle navi
     switch(boat) {
-        case BattleShip::ironclad:
+        case BattleShip::ironclad: {
             try {
-                _armies[_defenceGrids[player]->getIronclad()][player] = std::make_unique<BattleShip::Ironclad>(center, direction, *this, player);
+                std::unique_ptr<BattleShip::Army> ptr(new BattleShip::Ironclad(center, direction, player));
+                _armies[_defenceGrids[player]->getIronclad()][player] = std::move(ptr);
                 _defenceGrids[player]->addIronclad(center, direction);
             } catch(const std::invalid_argument& e) {
                 throw;
             }
-        break;
-        case BattleShip::support:
+            break;
+        }
+        case BattleShip::support: {
             try {
-                _armies[IRONCLAD+_defenceGrids[player]->getSupport()][player] = std::make_unique<BattleShip::Support>(center, direction, *this, player);
+                _armies[IRONCLAD+_defenceGrids[player]->getSupport()][player].reset(new BattleShip::Support(center, direction, player));
                 _defenceGrids[player]->addSupport(center, direction);
             } catch(const std::invalid_argument& e) {
                 throw;
             }
-        break;
-        case BattleShip::submarine:
+            break;
+        }
+        case BattleShip::submarine: {
             try {
-                _armies[IRONCLAD+SUPPORT+_defenceGrids[player]->getSubmarine()][player] = std::make_unique<BattleShip::Submarine>(center, direction, *this, player);
+                _armies[IRONCLAD+SUPPORT+_defenceGrids[player]->getSubmarine()][player].reset(new BattleShip::Submarine(center, direction, player));
                 _defenceGrids[player]->addSubmarine(center);
             } catch(const std::invalid_argument& e) {
                 throw;
             }
-        break;
+            break;
+        }
     }
 }
 

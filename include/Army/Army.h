@@ -2,7 +2,7 @@
 #define ARMY_H_
 #include <cstddef>
 #include "../BattleShip.h"
-#include "../Board/Grid/DefenceGrid/DefenceGrid.h"
+//#include "../Board/Grid/DefenceGrid/DefenceGrid.h"
 
 /*
 #include "../Action/Action.h"
@@ -30,7 +30,8 @@ class BattleShip::Army {
         virtual bool is_in_army(const BattleShip::point_t& coords) = 0;
 
     protected:
-        Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::Board& board, const BattleShip::nplayer_t& player) {}
+        //Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::Board& board, const BattleShip::nplayer_t& player) {}
+        Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::nplayer_t& player) {}
         std::size_t size;
         std::size_t armor;
         BattleShip::point_t center;
