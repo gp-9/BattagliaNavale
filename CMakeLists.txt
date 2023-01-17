@@ -53,6 +53,21 @@ add_executable(battaglia_navale
 
 set_target_properties(BattleShip PROPERTIES LINKER_LANGUAGE CXX)
 
+target_link_libraries(Ironclad
+    Army)
+
+target_link_libraries(Support
+    Army)
+
+target_link_libraries(Submarine
+    Army)
+
+target_link_libraries(AttackGrid
+    Grid)
+
+target_link_libraries(DefenceGrid
+    Grid)
+
 target_link_libraries(Board
     Grid
     AttackGrid

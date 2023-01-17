@@ -1,5 +1,7 @@
 #ifndef PROMPT_H_
 #define PROMPT_H_
+#include <chrono>
+#include <ctime>
 #include <random>
 #include <string>
 #include <sstream>

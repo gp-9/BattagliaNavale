@@ -6,6 +6,9 @@
 const std::string BattleShip::Prompt::_prompt = "\033[36;1m>\033[35;1m>\033[0m ";
 const std::string BattleShip::Prompt::_errorprompt = "\033[31;1m>>\033[0m ";
 
+BattleShip::Prompt::Prompt() 
+    : _currIronclad {0}, _currSupport {0}, _currSubmarine {0} {}
+
 bool checkFirstElement(const std::string& input) {
     if((input[0] < 0x4d && input[0] > 0x40) || (input[0] > 0x60 && input[0] < 0x6d)) return true;
     return false;
@@ -182,14 +185,15 @@ bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player, st
         output.str("");
         if(!std::getline(std::cin, _line)) {
             
-            myFile << _line << std::endl;
+            //myFile << _line << std::endl;
             std::cout << "\nUscendo dal prompt di Battaglia Navale" << std::endl;
             resetCount();
             output.str("");
             return true;
         } else {
-
-            myFile << _line << std::endl;
+            
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            myFile << std::ctime(&now) << "| Giocatore " << player+1 << " ha fatto: " << _line << std::endl;
             try {   
                 output << setupBoard(_line, boat, player) << _prompt;
                 _currIronclad = _board.getCurrIronclad(player);
@@ -269,7 +273,8 @@ bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player, std:
             _currIronclad = _board.getCurrIronclad(player);
             _currSupport = _board.getCurrSupport(player);
             _currSubmarine = _board.getCurrSubmarine(player);
-            myFile << output.str() << std::endl;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            myFile << std::ctime(&now) << "| Giocatore " << player+1 << " ha fatto: " << output.str() << std::endl;
         } catch(const std::invalid_argument& e) {
         }
         output.str("");
@@ -329,6 +334,7 @@ bool BattleShip::Prompt::playGame(const BattleShip::nplayer_t& player1, const Ba
         }
         p++;
     }
+    return true;
     /*
     if(startturn) {
         while(!_board.isGameOver()) {

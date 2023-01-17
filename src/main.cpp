@@ -1,5 +1,6 @@
 #include <cstring>
 #include <iostream>
+#include <iomanip>
 #include <random>
 #include <sstream>
 #include <string>
@@ -14,10 +15,20 @@ std::string eval(const std::string& input, BattleShip::Board& board);
 std::string setupBoard(const std::string& input, BattleShip::Board& board, const BattleShip::army_t& boat, const BattleShip::nplayer_t& player);
 std::string addBotArmy(BattleShip::Board& board, const BattleShip::nplayer_t& player);
 
-int main (int argc, char *argv[]) {
+int main(void) {
     BattleShip::match_t typeofmatch;
     BattleShip::Prompt prompt;
+    std::string line {};
+    std::cout << "\033[2J\033[H" << "\033[33;1mSelezionare il tipo di partita che si intende giocare\033[0m\n"
+              << std::setw(53) << "\033[35;1m-> \033[34;1mPC\033[0m: Giocatore contro computer;\n"
+              << std::setw(52) << "\033[35;1m-> \033[34;1mCC\033[0m: Computer contro computer;\n"
+              << std::setw(28) << "\033[35;1m-> \033[34;1mQ\033[0muit;\n"
+              << "\033[36;1m>\033[35;1m>\033[0m ";
+    while(!std::getline(std::cin, line)) {
+    }
+    
 
+    /*
     if (argc == 1) {
         printTitle();
         std::cout << "Nessun argomento fornito, sarà usato Giocatore vs Computer" << std::endl;
@@ -43,6 +54,7 @@ int main (int argc, char *argv[]) {
         std::cerr << "Too many arguments for the program\nPlease use: ./battaglia_navale TypeOfMatch ('pc' for Player vs Computer or 'cc' for Computer vs Computer)" << std::endl;
         return -1;
     }
+    */
 
 	std::random_device rnd;
 	std::mt19937 rng(rnd());
