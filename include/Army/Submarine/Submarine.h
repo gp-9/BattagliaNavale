@@ -8,6 +8,7 @@ class BattleShip::Submarine : public BattleShip::Army {
         ~Submarine() {}
         bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board, const BattleShip::nplayer_t& player) override;
         bool is_in_army(const BattleShip::point_t& coords) override;
+        void armor_restore() override {}
 };
 
 #endif // SUBMARINE_H_

@@ -41,8 +41,8 @@ class BattleShip::Board {
         inline int getCurrIronclad(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->getIronclad(); }
         inline int getCurrSupport(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->getSupport(); }
         inline int getCurrSubmarine(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->getSubmarine(); }
-        inline bool isPlayerSetup(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->startGame(); }
-        inline bool isGameStarted() const { return _defenceGrids[BattleShip::p1]->startGame() && _defenceGrids[BattleShip::p2]->startGame(); }
+        inline bool isPlayerSetup(const BattleShip::nplayer_t& player) const { return _defenceGrids[player]->isGameStarted(); }
+        inline bool isGameStarted() const { return _defenceGrids[BattleShip::p1]->isGameStarted() && _defenceGrids[BattleShip::p2]->isGameStarted(); }
         inline bool isGameOver() const { return _defenceGrids[BattleShip::p1]->matchTermianted() || _defenceGrids[BattleShip::p2]->matchTermianted(); }
         std::string getPlayerStringBoard(const BattleShip::nplayer_t& player) const;
 };

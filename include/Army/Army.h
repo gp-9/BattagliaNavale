@@ -26,8 +26,8 @@ class BattleShip::Army {
     public:
         virtual bool makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, BattleShip::Board& board, const BattleShip::nplayer_t& player) = 0; 
         virtual ~Army() {}
-        virtual void armor_restore();
-        virtual bool is_in_army(const BattleShip::point_t& coords);
+        virtual void armor_restore() = 0;
+        virtual bool is_in_army(const BattleShip::point_t& coords) = 0;
 
     protected:
         Army(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::Board& board, const BattleShip::nplayer_t& player) {}

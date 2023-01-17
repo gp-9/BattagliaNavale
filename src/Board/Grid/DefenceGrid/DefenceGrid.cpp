@@ -1,7 +1,7 @@
 #include "../../../../include/Board/Grid/DefenceGrid/DefenceGrid.h"
 
 BattleShip::DefenceGrid::DefenceGrid() : BattleShip::Grid::Grid(), 
-    _currIronclad {0}, _currSupport {0}, _currSubmarine {0} , _ironcladCenters {}, _supportCenters {}, _submarineCenters {} {}
+    _currIronclad {0}, _currSupport {0}, _currSubmarine {0} , _ironcladCenters {}, _supportCenters {}, _submarineCenters {}, _startgame {false} {}
 
 void BattleShip::DefenceGrid::drawIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) {
 	// tutte e due le coordinate vanno decremenetate dato che partono da 1 e l'array invece parte da 0
