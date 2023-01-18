@@ -28,12 +28,12 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
     bool checkIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction) const;
     bool checkSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction) const;
     bool checkSubmarine(const BattleShip::point_t& center) const;
-    void deleteIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-    void deleteSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
-    void deleteSubmarine(const BattleShip::point_t& center);
     bool checkIroncladDestroyed(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
     bool checkSupportDestroyed(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
     bool checkSubmarineDestroyed(const BattleShip::point_t& center);
+    void deleteIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+    void deleteSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
+    void deleteSubmarine(const BattleShip::point_t& center);
     bool destroyIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
     bool destroySupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
     bool destroySubmarine(const BattleShip::point_t& center);
@@ -54,6 +54,8 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
         void addIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSubmarine(const BattleShip::point_t& center);
+        void moveSupport(const BattleShip::point_t& center, const BattleShip::point_t& target, const BattleShip::direction_t& direction);
+        void moveSubmarine(const BattleShip::point_t& center, const BattleShip::point_t& target);
         bool destroyShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army);
         void healShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army);
         bool isShip(const BattleShip::point_t& point) const { return Grid::getGridPosition(point); }

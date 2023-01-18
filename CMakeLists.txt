@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 
 project(battaglia_navale)
 
-set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -g")
+#set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -g")
+set(GCC_COVERAGE_COMPILE_FLAGS "-g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 
 add_library(Utils

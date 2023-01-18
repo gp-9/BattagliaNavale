@@ -15,6 +15,7 @@ class BattleShip::Support : public BattleShip::Army {
         inline void armor_restore() override { Army::setArmor(SUPPORTARMOR); }
         bool is_in_army(const BattleShip::point_t& coords) override;
         inline bool isDamaged() const override { return Army::getArmor() != SUPPORTARMOR; }
+        void move(const BattleShip::point_t& target) override;
 };
 
 #endif // SUPPORT_H_

@@ -245,6 +245,27 @@ bool BattleShip::DefenceGrid::destroyShip(const BattleShip::point_t& center, con
     }
 }
 
+void BattleShip::DefenceGrid::moveSupport(const BattleShip::point_t& center, const BattleShip::point_t& target, const BattleShip::direction_t& direction) {
+    for(int i = 0; i < SUPPORT; i++) {
+        if(_supportCenters[i].xPos == center.xPos && _supportCenters[i].yPos == center.yPos) {
+            _supportCenters[i] = target;
+        }
+    }
+    deleteSupport(center, direction);
+    drawSupport(target, direction);
+}
+
+
+void BattleShip::DefenceGrid::moveSubmarine(const BattleShip::point_t& center, const BattleShip::point_t& target) {
+    for(int i = 0; i < SUBMARINE; i++) {
+        if(_submarineCenters[i].xPos == center.xPos && _submarineCenters[i].yPos == center.yPos) {
+            _submarineCenters[i] = target;
+        }
+    }
+    deleteSubmarine(center);
+    drawSubmarine(target);
+}
+
 void BattleShip::DefenceGrid::healShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army) {
     switch(army) {
         case BattleShip::ironclad:
