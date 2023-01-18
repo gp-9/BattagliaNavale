@@ -284,7 +284,6 @@ bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player, std:
         }
         output.str("");
     }
-    std::cout << _board.getPlayerStringBoard(player) << std::endl;
     resetCount();
     output.str("");
     return false;
@@ -368,8 +367,6 @@ bool BattleShip::Prompt::makeTurnPC(int moves, std::ofstream& myFile) {
                 break;
             }
         }
-        std::cout << std::endl << _board.getPlayerStringBoard(BattleShip::nplayer_t(moves%NPLAYER)) << std::endl;
-        std::cout << std::endl << _board.getPlayerStringBoard(BattleShip::nplayer_t((moves+1)%NPLAYER)) << std::endl;
     }
     return false;
 }
