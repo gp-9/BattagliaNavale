@@ -32,6 +32,8 @@ class BattleShip::Prompt {
         bool setUpBoardBotForReplay(const BattleShip::nplayer_t& player, std::ifstream& myFile);
         bool playGame(const BattleShip::nplayer_t& player1, const BattleShip::player_t& player1type, const BattleShip::nplayer_t& player2, 
                 const BattleShip::player_t& player2type, int starter, int moves, std::ofstream& myFile);
+        bool playGameForReplay(const BattleShip::nplayer_t& player1, const BattleShip::player_t& player1type, const BattleShip::nplayer_t& player2, 
+                const BattleShip::player_t& player2type, int starter, int moves, std::ifstream& myFile);
 };
 
 #endif // PROMPT_H_
