@@ -12,6 +12,7 @@ class BattleShip::Submarine : public BattleShip::Army {
         bool is_in_army(const BattleShip::point_t& coords) override;
         void armor_restore() override {}
         inline bool isDamaged() const override { return Army::getArmor() != SUBMARINEARMOR; }
+        inline void move(const BattleShip::point_t& target) override { Army::setCenter(target); }
 };
 
 #endif // SUBMARINE_H_

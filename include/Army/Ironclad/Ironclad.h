@@ -15,6 +15,7 @@ class BattleShip::Ironclad : public BattleShip::Army {
         inline void armor_restore() override { Army::setArmor(IRONCLADARMOR); }
         bool is_in_army(const BattleShip::point_t& coords) override;
         inline bool isDamaged() const override { return Army::getArmor() != IRONCLADARMOR; }
+        inline void move(const BattleShip::point_t& target) override {} 
 };
 
 #endif // IRONCLAD_H_

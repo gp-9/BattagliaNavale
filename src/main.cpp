@@ -9,7 +9,6 @@
 #include <chrono>
 #include "../include/Prompt/Prompt.h"
 #include "../include/Utils/Utils.h"
-//#include "../include/Bot/Bot.h"
 
 #define MAXMOVES 200
 
@@ -116,44 +115,42 @@ int main(void) {
     myFile.open(filepath);
     myFile << "Hello there\n";
     myFile.close();
-    BattleShip::nplayer_t player1 = BattleShip::nplayer_t(startturn);
-    BattleShip::nplayer_t player2 = BattleShip::nplayer_t((startturn+1)%NPLAYER);
     int moves = 0;
+    myFile.open(filepath);
 
     if(typeofmatch == BattleShip::pc) {
-        myFile.open(filepath);
-        if(player1 < player2) {
-            exited = prompt.setUpBoardHuman(player1, myFile); 
+            exited = prompt.setUpBoardHuman(BattleShip::nplayer_t(startturn), myFile); 
             if(!exited) {
                 std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
-                prompt.setUpBoardBot(player2, myFile);
+                prompt.setUpBoardBot(BattleShip::nplayer_t((startturn+1)%NPLAYER), myFile);
             }
 
+            prompt.setUpGamePC(startturn);
             while(!exited) {
-                exited = prompt.playGame(player1, BattleShip::human, player2, BattleShip::bot, startturn, moves, myFile);
+                exited = prompt.makeTurnPC(moves, myFile);
+                if(prompt.checkVictory()) {
+                    std::cout << "Il giocatore " << (moves%NPLAYER)+1 << " vince" << std::endl;
+                    break;
+                }
                 moves++;
             }
             myFile.close();
-        } else {
-            prompt.setUpBoardBot(player2, myFile);
-            exited = prompt.setUpBoardHuman(player1, myFile);
-            while(!exited) {
-                exited = prompt.playGame(player2, BattleShip::bot, player1, BattleShip::human, startturn, moves, myFile);
-                moves++;
-            }
-        }
-        
     } else {
         std::cout << "Giocando partita Computer vs Computer\n";
-        myFile.open(filepath);
-        prompt.setUpBoardBot(player1, myFile);
-        prompt.setUpBoardBot(player2, myFile);
-        while(!exited && moves < MAXMOVES) {
-            prompt.playGame(player1, BattleShip::bot, player2, BattleShip::bot, startturn, moves, myFile);
+        prompt.setUpBoardBot(BattleShip::nplayer_t(startturn), myFile);
+        prompt.setUpBoardBot(BattleShip::nplayer_t((startturn+1)%NPLAYER), myFile);
+        prompt.setUpGameCC(startturn);
+        while(moves < MAXMOVES) {
+            prompt.makeTurnCC(moves, myFile);
+            if(prompt.checkVictory()) {
+                std::cout << "Il giocatore " << (moves%NPLAYER)+1 << " vince" << std::endl;
+                break;
+            }
             moves++;
         }
-        myFile.close();
+        if(moves == MAXMOVES) std::cout << "Nessuno vince" << std::endl;
     }
+    myFile.close();
     
     return 0;
 }

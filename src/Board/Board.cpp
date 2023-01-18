@@ -71,9 +71,13 @@ bool BattleShip::Board::makeAction(const BattleShip::point_t& origin, const Batt
                         if(_defenceGrids[(player+1)%NPLAYER]->hitPosition(target)) {
                             _attackGrids[player]->hitPosition(target, HIT);
                             for(int j = 0; j < TOTALARMYCOUNT; j++) {
-                                if(_armies[j][(player+1)%NPLAYER].get() && _armies[j][(player+1)%NPLAYER]->is_in_army(target) && (_armies[j][(player+1)%NPLAYER]->getArmor() == 1)) {
-                                    _defenceGrids[(player+1)%NPLAYER]->destroyShip(_armies[j][(player+1)%NPLAYER]->getCenter(), _armies[j][(player+1)%NPLAYER]->getDirection(), _armies[j][(player+1)%NPLAYER]->getType());
-                                    _armies[j][(player+1)%NPLAYER].reset(nullptr);
+                                if(_armies[j][(player+1)%NPLAYER].get() && _armies[j][(player+1)%NPLAYER]->is_in_army(target)) {
+                                        if(_armies[j][(player+1)%NPLAYER]->getArmor() == 1) {
+                                            _defenceGrids[(player+1)%NPLAYER]->destroyShip(_armies[j][(player+1)%NPLAYER]->getCenter(), _armies[j][(player+1)%NPLAYER]->getDirection(), _armies[j][(player+1)%NPLAYER]->getType());
+                                            _armies[j][(player+1)%NPLAYER].reset(nullptr);
+                                        } else {
+                                            _armies[j][(player+1)%NPLAYER]->hitUnit();
+                                        }
                                     break;
                                 }
                             }
@@ -85,6 +89,8 @@ bool BattleShip::Board::makeAction(const BattleShip::point_t& origin, const Batt
                     case BattleShip::support: {
                         if(_defenceGrids[player]->checkPosition(target, _armies[i][player]->getDirection(), BattleShip::support)) {
                             //_armies[i][player]->makeAction(target); 
+                            _defenceGrids[player]->moveSupport(center, target, _armies[i][player]->getDirection());
+                            _armies[i][player]->move(target);
                             std::array<std::array<BattleShip::point_t, 3>, 3> surr = _defenceGrids[player]->getSupportSurrounds(target);
                             for(std::array<BattleShip::point_t, 3>& x : surr) {
                                 for(BattleShip::point_t y : x) {
@@ -103,6 +109,8 @@ bool BattleShip::Board::makeAction(const BattleShip::point_t& origin, const Batt
                     case BattleShip::submarine: {
                         if(_defenceGrids[player]->checkPosition(target, _armies[i][player]->getDirection(), BattleShip::submarine)) {
                             //_armies[i][player]->makeAction(target); 
+                            _defenceGrids[player]->moveSubmarine(center, target);
+                            _armies[i][player]->move(target);
                             _attackGrids[player]->sonar(target, _defenceGrids[(player+1)%NPLAYER]->getSonarSurrounds(target));
                             return true;
                         }

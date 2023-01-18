@@ -33,3 +33,21 @@ bool BattleShip::Support::is_in_army(const BattleShip::point_t& coords){
 
     return false;
 }
+
+void BattleShip::Support::move(const BattleShip::point_t& target) {
+    BattleShip::direction_t dir = Army::getDirection();
+    if(dir == BattleShip::northsouth) {
+        int count = 0;
+        for(int i=-1; i < 2; i++) {
+            coords_position[count] = {target.xPos+i, target.yPos};
+            count++;
+        }
+    } else {
+        int count = 0;
+        for(int i=-1; i < 2; i++) {
+            coords_position[count] = {target.xPos, target.yPos+i};
+            count++;
+        }
+    }
+    Army::setCenter(target);
+}
