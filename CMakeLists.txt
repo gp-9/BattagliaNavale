@@ -51,6 +51,9 @@ add_library(Prompt
 add_executable(battaglia_navale
     src/main.cpp)
 
+add_executable(replay_battaglia_navale
+    src/replay.cpp)
+
 set_target_properties(BattleShip PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(Ironclad
@@ -85,3 +88,7 @@ target_link_libraries(Prompt
 
 target_link_libraries(battaglia_navale
     Prompt)
+
+target_link_libraries(replay_battaglia_navale
+    Prompt
+    Board)
