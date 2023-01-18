@@ -134,7 +134,7 @@ std::string BattleShip::Prompt::evalHuman(const std::string& input, const Battle
                 target.yPos = yTarget - 1;
                 if(_board.makeAction(origin, target, player)) {
                     std::stringstream s; 
-                    s << static_cast<char>(tokens[0][0]) << origin.yPos << " " << static_cast<char>(tokens[1][0]) << target.yPos << '\n';
+                    s << static_cast<char>(tokens[0][0]) << origin.yPos + 1 << " " << static_cast<char>(tokens[1][0]) << target.yPos + 1 << '\n';
                     output = s.str();
                 } else throw std::invalid_argument("Origine non valida");
             } else throw std::invalid_argument("Coordinate non valide");
@@ -163,6 +163,8 @@ void BattleShip::Prompt::evalBot(const std::string& input, const BattleShip::npl
     }
     origin.yPos = std::stoi(tokens[0].substr(1));
     target.yPos = std::stoi(tokens[1].substr(1));
+    bool done = _board.makeAction(origin, target, player);
+    if(!done) throw std::invalid_argument("Coordinate non valide");
 }
 
 bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player, std::ofstream& myFile) {
@@ -196,8 +198,7 @@ bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player, st
                 _currIronclad = _board.getCurrIronclad(player);
                 _currSupport = _board.getCurrSupport(player);
                 _currSubmarine = _board.getCurrSubmarine(player);
-                std::time_t now = std::time(nullptr);
-                myFile << std::put_time(std::localtime(&now), "%c %Z") << "| Giocatore " << player+1 << " ha fatto: " << _line << std::endl;
+                myFile << "p" << player+1 << ":" << _line << std::endl;
             } catch(const std::invalid_argument& e) {
                 output << e.what() << ". Perfavore reinserire il comando\n" << _errorprompt;
             }
@@ -272,12 +273,12 @@ bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player, std:
             _currIronclad = _board.getCurrIronclad(player);
             _currSupport = _board.getCurrSupport(player);
             _currSubmarine = _board.getCurrSubmarine(player);
-            std::time_t now = std::time(nullptr);
-            myFile << std::put_time(std::localtime(&now), "%c %Z") << "| Giocatore " << player+1 << " ha fatto: " << output.str() << std::endl;
+            myFile << "p" << player+1 << ":" << output.str() << std::endl;
         } catch(const std::invalid_argument& e) {
         }
         output.str("");
     }
+    std::cout << _board.getPlayerStringBoard(player) << std::endl;
     resetCount();
     output.str("");
     return false;
@@ -314,26 +315,56 @@ bool BattleShip::Prompt::setUpBoardBotForReplay(const BattleShip::nplayer_t& pla
     output.str("");
     return false;
 }
-bool BattleShip::Prompt::playGame(const BattleShip::nplayer_t& player1, const BattleShip::player_t& player1type, const BattleShip::nplayer_t& player2, const BattleShip::player_t& player2type, int starter) {
+bool BattleShip::Prompt::playGame(const BattleShip::nplayer_t& player1, const BattleShip::player_t& player1type, const BattleShip::nplayer_t& player2, 
+        const BattleShip::player_t& player2type, int starter, int moves,  std::ofstream& myFile) {
     if(!_board.isGameStarted()) throw std::invalid_argument("I giocatori devono ancora finire di posizionare le navi");
+	std::random_device rnd;
+	std::mt19937 rng(rnd());
+	std::uniform_int_distribution<std::mt19937::result_type> randomletter(65, 76);
+	std::uniform_int_distribution<std::mt19937::result_type> randomnumber(1, 12);
     std::array<BattleShip::nplayer_t, NPLAYER> turns {};
     std::array<BattleShip::player_t, NPLAYER> players {};
     turns[starter] = player1;
     players[starter] = player1type;
     turns[(starter+1)%NPLAYER] = player2;
     players[(starter+1)%NPLAYER] = player2type;
-    int p = 0;
-    while(!_board.isGameOver()) {
-        if(p == 2) p = 0;
-        switch(players[p]) {
-            case BattleShip::human:
-            break;
-            case BattleShip::bot:
-            break;
+    std::cout << _prompt;
+    if(!_board.isGameOver()) {
+        switch(players[moves%NPLAYER]) {
+            case BattleShip::human: {
+                if(!std::getline(std::cin, _line)) {
+                    std::cout << "\nUscendo dal prompt di Battaglia Navale" << std::endl;
+                    return true;
+                } else {
+                    try {
+                        std::cout << evalHuman(_line, BattleShip::nplayer_t(starter)) << _prompt;
+                        myFile << "p" << (moves%NPLAYER)+1 << ":" << _line << std::endl;
+                    } catch(const std::invalid_argument& e) {
+                        std::cout << e.what() << ". Perfavore reinserire il comando\n" << _errorprompt;
+                    }
+                }
+                break;
+            }
+            case BattleShip::bot: {
+                bool done = false;
+                while(!done) {
+                    output << static_cast<char>(randomletter(rng)) << randomnumber(rng) << " " << static_cast<char>(randomletter(rng)) << randomnumber(rng);
+                    try {
+                        evalBot(output.str(), BattleShip::nplayer_t((starter+1)%NPLAYER));
+                        std::cout << output.str() << std::endl;
+                        done = true;
+                        myFile << "p" << (moves%NPLAYER)+1 << ":" << output.str() << std::endl;
+                    } catch(const std::invalid_argument& e) {
+                    }
+                    output.str("");
+                }
+                break;
+            }
         }
-        p++;
+        std::cout << _board.getPlayerStringBoard(player1) << std::endl;
+        std::cout << _board.getPlayerStringBoard(player2) << std::endl;
     }
-    return true;
+    return false;
     /*
     if(startturn) {
         while(!_board.isGameOver()) {
