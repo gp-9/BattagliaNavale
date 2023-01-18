@@ -3,6 +3,9 @@
 #include <cstdint>
 
 #define NPLAYER 2
+#define IRONCLADSIZE 5
+#define SUPPORTSIZE 3
+#define SUBMARINESIZE 1
 
 namespace BattleShip {
     typedef enum { pc, cc } match_t;

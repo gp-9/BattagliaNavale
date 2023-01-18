@@ -36,7 +36,7 @@ int main(void) {
     std::string logDirectory = "../logFiles/";
     std::string filepath {};
     std::ofstream myFile;
-    /*
+
     std::cout << "\033[2J\033[H" << "\033[33;1mSelezionare il tipo di partita che si intende giocare\033[0m\n"
               << std::setw(53) << "\033[35;1m-> \033[34;1mPC\033[0m: Giocatore contro computer;\n"
               << std::setw(52) << "\033[35;1m-> \033[34;1mCC\033[0m: Computer contro computer;\n"
@@ -85,8 +85,6 @@ int main(void) {
                 char timestr[100] = {};
                 std::strftime(timestr, sizeof(timestr), "%F", std::localtime(&now));
                 filepath = logDirectory + std::string(timestr) + "_log.txt";
-                myFile = std::ofstream(filepath);
-                myFile.open(filepath);
                 std::cout << "Il file " << filepath << " appena creato verra' usato per il logging dei comandi" << std::endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 break;
@@ -95,6 +93,7 @@ int main(void) {
                 myFile.open(filepath);
                 if(myFile.is_open()) {
                     std::cout << "Verra' usato il file " << line << " per il logging dei comandi" << std::endl;
+                    myFile.close();
                     std::this_thread::sleep_for(std::chrono::seconds(1));
                     break;
                 } else {
@@ -104,7 +103,6 @@ int main(void) {
         }
     }
     printTitle();
-    */
 
 	std::random_device rnd;
 	std::mt19937 rng(rnd());
@@ -113,30 +111,32 @@ int main(void) {
 	std::uniform_int_distribution<std::mt19937::result_type> randomletter(65, 76);
 	std::uniform_int_distribution<std::mt19937::result_type> randomnumber(1, 12);
     bool exited = false;
-    std::array<std::array<std::unique_ptr<BattleShip::Army>, NPLAYER>, TOTALARMYCOUNT> _armies;
-    for(int i = 0; i < IRONCLAD; i++) {
-        for(int j = 0; j < NPLAYER; j++) {
-            std::unique_ptr<BattleShip::Army> p (new BattleShip::Ironclad({0, 2}, BattleShip::eastwest, BattleShip::p1));
-            _armies[i][j] = std::move(p);
-        }
-    }
+    myFile.open(filepath);
+    myFile << "Hello there\n";
+    myFile.close();
+    BattleShip::nplayer_t player1 = BattleShip::nplayer_t(startturn);
+    BattleShip::nplayer_t player2 = BattleShip::nplayer_t((startturn+1)%NPLAYER);
 
     if(typeofmatch == BattleShip::pc) {
-        exited = prompt.setUpBoardHuman(BattleShip::p1, myFile); 
-
+        myFile.open(filepath);
+        exited = prompt.setUpBoardHuman(player1, myFile); 
         if(!exited) {
             std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
-            //prompt.setUpBoardBot(BattleShip::p2, myFile);
+            prompt.setUpBoardBot(player2, myFile);
         }
 
         //while(!exited) {
             //exited = prompt.playGame(BattleShip::p1, BattleShip::human, BattleShip::p2, BattleShip::bot, startturn);
         //}
+        myFile.close();
         
     } else {
         std::cout << "Giocando partita Computer vs Computer\n";
+        myFile.open(filepath);
+        prompt.setUpBoardBot(player1, myFile);
+        prompt.setUpBoardBot(player2, myFile);
+        myFile.close();
     }
-    myFile.close();
     
     return 0;
 }

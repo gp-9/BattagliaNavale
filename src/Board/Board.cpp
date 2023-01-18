@@ -27,8 +27,7 @@ void BattleShip::Board::addArmy(const BattleShip::nplayer_t& player, const Battl
     switch(boat) {
         case BattleShip::ironclad: {
             try {
-                std::unique_ptr<BattleShip::Army> ptr(new BattleShip::Ironclad(center, direction, player));
-                _armies[_defenceGrids[player]->getIronclad()][player] = std::move(ptr);
+                _armies[_defenceGrids[player]->getIronclad()][player].reset(new BattleShip::Ironclad(center, direction));
                 _defenceGrids[player]->addIronclad(center, direction);
             } catch(const std::invalid_argument& e) {
                 throw;
@@ -37,7 +36,7 @@ void BattleShip::Board::addArmy(const BattleShip::nplayer_t& player, const Battl
         }
         case BattleShip::support: {
             try {
-                _armies[IRONCLAD+_defenceGrids[player]->getSupport()][player].reset(new BattleShip::Support(center, direction, player));
+                _armies[IRONCLAD+_defenceGrids[player]->getSupport()][player].reset(new BattleShip::Support(center, direction));
                 _defenceGrids[player]->addSupport(center, direction);
             } catch(const std::invalid_argument& e) {
                 throw;
@@ -46,7 +45,7 @@ void BattleShip::Board::addArmy(const BattleShip::nplayer_t& player, const Battl
         }
         case BattleShip::submarine: {
             try {
-                _armies[IRONCLAD+SUPPORT+_defenceGrids[player]->getSubmarine()][player].reset(new BattleShip::Submarine(center, direction, player));
+                _armies[IRONCLAD+SUPPORT+_defenceGrids[player]->getSubmarine()][player].reset(new BattleShip::Submarine(center, direction));
                 _defenceGrids[player]->addSubmarine(center);
             } catch(const std::invalid_argument& e) {
                 throw;

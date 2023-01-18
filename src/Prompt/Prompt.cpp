@@ -1,7 +1,8 @@
 #include "../../include/Prompt/Prompt.h"
 #include <fstream>
-#include <unistd.h>
 #include <string>
+#include <unistd.h>
+#include <iomanip>
 
 const std::string BattleShip::Prompt::_prompt = "\033[36;1m>\033[35;1m>\033[0m ";
 const std::string BattleShip::Prompt::_errorprompt = "\033[31;1m>>\033[0m ";
@@ -190,13 +191,13 @@ bool BattleShip::Prompt::setUpBoardHuman(const BattleShip::nplayer_t& player, st
             return true;
         } else {
             
-            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            myFile << std::ctime(&now) << ": Giocatore " << player+1 << " ha fatto: " << _line << std::endl;
             try {   
                 output << setupBoard(_line, boat, player) << _prompt;
                 _currIronclad = _board.getCurrIronclad(player);
                 _currSupport = _board.getCurrSupport(player);
                 _currSubmarine = _board.getCurrSubmarine(player);
+                std::time_t now = std::time(nullptr);
+                myFile << std::put_time(std::localtime(&now), "%c %Z") << "| Giocatore " << player+1 << " ha fatto: " << _line << std::endl;
             } catch(const std::invalid_argument& e) {
                 output << e.what() << ". Perfavore reinserire il comando\n" << _errorprompt;
             }
@@ -271,8 +272,8 @@ bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player, std:
             _currIronclad = _board.getCurrIronclad(player);
             _currSupport = _board.getCurrSupport(player);
             _currSubmarine = _board.getCurrSubmarine(player);
-            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            myFile << std::ctime(&now) << "| Giocatore " << player+1 << " ha fatto: " << output.str() << std::endl;
+            std::time_t now = std::time(nullptr);
+            myFile << std::put_time(std::localtime(&now), "%c %Z") << "| Giocatore " << player+1 << " ha fatto: " << output.str() << std::endl;
         } catch(const std::invalid_argument& e) {
         }
         output.str("");

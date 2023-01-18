@@ -14,7 +14,7 @@ class BattleShip::Grid {
     protected:
         Grid() {}
         virtual ~Grid() {}
-        inline char getGridPosition(const BattleShip::point_t& position) const { return _grid[position.xPos][position.yPos]; }
+        inline char getGridPosition(const BattleShip::point_t& position) const { if(verifiyPosition(position)) return _grid[position.xPos][position.yPos]; return -1;}
         bool modifyGrid(const BattleShip::point_t& position, const char element);
         inline bool assertCharEq(const BattleShip::point_t& position, const char element) const { return _grid[position.xPos][position.yPos] == element; }
 };
