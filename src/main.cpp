@@ -11,6 +11,8 @@
 #include "../include/Utils/Utils.h"
 //#include "../include/Bot/Bot.h"
 
+#define MAXMOVES 200
+
 static void printTitle() {
     std::cout << "\033[2J\033[H" << R"(
   ██████╗  █████╗ ████████╗████████╗██╗     ███████╗███████╗██╗  ██╗██╗██████╗      ███████╗███╗   ██╗██╗  ██╗ █████╗  ██████╗███████╗██████╗ 
@@ -116,25 +118,40 @@ int main(void) {
     myFile.close();
     BattleShip::nplayer_t player1 = BattleShip::nplayer_t(startturn);
     BattleShip::nplayer_t player2 = BattleShip::nplayer_t((startturn+1)%NPLAYER);
+    int moves = 0;
 
     if(typeofmatch == BattleShip::pc) {
         myFile.open(filepath);
-        exited = prompt.setUpBoardHuman(player1, myFile); 
-        if(!exited) {
-            std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
-            prompt.setUpBoardBot(player2, myFile);
-        }
+        if(player1 < player2) {
+            exited = prompt.setUpBoardHuman(player1, myFile); 
+            if(!exited) {
+                std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
+                prompt.setUpBoardBot(player2, myFile);
+            }
 
-        //while(!exited) {
-            //exited = prompt.playGame(BattleShip::p1, BattleShip::human, BattleShip::p2, BattleShip::bot, startturn);
-        //}
-        myFile.close();
+            while(!exited) {
+                exited = prompt.playGame(player1, BattleShip::human, player2, BattleShip::bot, startturn, moves, myFile);
+                moves++;
+            }
+            myFile.close();
+        } else {
+            prompt.setUpBoardBot(player2, myFile);
+            exited = prompt.setUpBoardHuman(player1, myFile);
+            while(!exited) {
+                exited = prompt.playGame(player2, BattleShip::bot, player1, BattleShip::human, startturn, moves, myFile);
+                moves++;
+            }
+        }
         
     } else {
         std::cout << "Giocando partita Computer vs Computer\n";
         myFile.open(filepath);
         prompt.setUpBoardBot(player1, myFile);
         prompt.setUpBoardBot(player2, myFile);
+        while(!exited && moves < MAXMOVES) {
+            prompt.playGame(player1, BattleShip::bot, player2, BattleShip::bot, startturn, moves, myFile);
+            moves++;
+        }
         myFile.close();
     }
     

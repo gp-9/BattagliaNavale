@@ -54,8 +54,8 @@ class BattleShip::DefenceGrid : public BattleShip::Grid {
         void addIronclad(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSupport(const BattleShip::point_t& center, const BattleShip::direction_t& direction);
         void addSubmarine(const BattleShip::point_t& center);
-        bool destroyShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army);
-        void healShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army);
+        bool destroyShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army);
+        void healShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army);
         bool isShip(const BattleShip::point_t& point) const { return Grid::getGridPosition(point); }
         const std::array<std::array<BattleShip::point_t, 3>, 3> getSupportSurrounds(const BattleShip::point_t& center) const;
         const std::array<std::array<char, 5>, 5> getSonarSurrounds(const BattleShip::point_t& center) const;

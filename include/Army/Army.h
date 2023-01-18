@@ -19,6 +19,7 @@ class BattleShip::Army {
         inline void hitUnit() { if(armor > 0) armor--; }
         inline std::size_t getArmor() const { return this->armor; }
         virtual bool is_in_army(const BattleShip::point_t& coords) = 0;
+        virtual inline bool isDamaged() const = 0;
         inline BattleShip::point_t getCenter() const { return center; }
         inline BattleShip::army_t getType() const { return type; }
         inline BattleShip::direction_t getDirection() const { return direction; }

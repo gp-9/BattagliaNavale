@@ -231,7 +231,7 @@ bool BattleShip::DefenceGrid::destroySubmarine(const BattleShip::point_t& center
     return false;
 }
 
-bool BattleShip::DefenceGrid::destroyShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army) {
+bool BattleShip::DefenceGrid::destroyShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army) {
     switch(army) {
         case BattleShip::ironclad:
             return destroyIronclad(center, direction);
@@ -245,7 +245,7 @@ bool BattleShip::DefenceGrid::destroyShip(const BattleShip::point_t& center, Bat
     }
 }
 
-void BattleShip::DefenceGrid::healShip(const BattleShip::point_t& center, BattleShip::direction_t& direction, BattleShip::army_t& army) {
+void BattleShip::DefenceGrid::healShip(const BattleShip::point_t& center, const BattleShip::direction_t& direction, const BattleShip::army_t& army) {
     switch(army) {
         case BattleShip::ironclad:
             drawIronclad(center, direction);

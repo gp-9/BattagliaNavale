@@ -62,53 +62,55 @@ bool BattleShip::Board::checkPosition(const BattleShip::point_t& center, const B
 bool BattleShip::Board::makeAction(const BattleShip::point_t& origin, const BattleShip::point_t& target, const BattleShip::nplayer_t& player) {
     for(int i = 0; i < TOTALARMYCOUNT; i++) {
         // Esempio di come si possa implementare l'azione coordinata da board
-        /*
-        BattleShip::point_t center = _armies[i][player]->getCenter();
-        if(center.xPos == origin.xPos && center.yPos == origin.yPos) { 
-            BattleShip::army_t boatt = _armies[i][player]->getType();
-            switch(boatt) {
-                case BattleShip::ironclad:
-                    if(_defenceGrids[(player+1)%NPLAYER]->hitPosition(target)) {
-                        _attackGrids[player]->hitPosition(target, HIT);
-                        for(int j = 0; j < TOTALARMYCOUNT; j++) {
-                            std::unique_ptr<BattleShip::Army> boat = _armies[j][(player+1)%NPLAYER]
-                            if(boat->hasPoint(target)) {
-                                _defenceGrids[(player+1)%NPLAYER]->destroyShip(baot->getCenter(), boat->getDirection(), boat->getType());
-                                boat->destroy();
-                                break;
+        if(_armies[i][player].get()) {
+            BattleShip::point_t center = _armies[i][player]->getCenter();
+            if(center.xPos == origin.xPos && center.yPos == origin.yPos) { 
+                BattleShip::army_t boatt = _armies[i][player]->getType();
+                switch(boatt) {
+                    case BattleShip::ironclad: {
+                        if(_defenceGrids[(player+1)%NPLAYER]->hitPosition(target)) {
+                            _attackGrids[player]->hitPosition(target, HIT);
+                            for(int j = 0; j < TOTALARMYCOUNT; j++) {
+                                if(_armies[j][(player+1)%NPLAYER].get() && _armies[j][(player+1)%NPLAYER]->is_in_army(target) && (_armies[j][(player+1)%NPLAYER]->getArmor() == 1)) {
+                                    _defenceGrids[(player+1)%NPLAYER]->destroyShip(_armies[j][(player+1)%NPLAYER]->getCenter(), _armies[j][(player+1)%NPLAYER]->getDirection(), _armies[j][(player+1)%NPLAYER]->getType());
+                                    _armies[j][(player+1)%NPLAYER].reset(nullptr);
+                                    break;
+                                }
                             }
-                        }
-                    } else _attackGrids[player]->hitPosition(target, MISS);
-                    _armies[i][player]->makeAction(target);
-                    return true;
-                break;
-                case BattleShip::support:
-                    if(_defenceGrids[player]->checkPosition(target, _armies[i][player]->getDirection(), BattleShip::support)) {
-                        _armies[i][player]->makeAction(target); 
-                        std::array<std::array<BattleShip::point_t, 3>, 3> surr = _defenceGrids[player]->getSupportSurrounds(target);
-                        for(std::array<BattleShip::point_t, 3>& x : surr) {
-                            for(BattleShip::point_t y : x) {
-                                for(int j = 0; j < TOTALARMYCOUNT; j++) {
-                                    if(_armies[j][player]->getType() != BattleShip::support && _armies[j][player]->isDamaged() && _armies[j][player]->hasPoint(y)) {
-                                        _defenceGrids[player]->healShip(_armies[j][player]->getCenter(), _armies[j][player]->getDirection(), _armies[j][player]->getType());
-                                        _armies[j][player]->heal();
+                        } else _attackGrids[player]->hitPosition(target, MISS);
+                        //_armies[i][player]->makeAction(target);
+                        return true;
+                        break;
+                    }
+                    case BattleShip::support: {
+                        if(_defenceGrids[player]->checkPosition(target, _armies[i][player]->getDirection(), BattleShip::support)) {
+                            //_armies[i][player]->makeAction(target); 
+                            std::array<std::array<BattleShip::point_t, 3>, 3> surr = _defenceGrids[player]->getSupportSurrounds(target);
+                            for(std::array<BattleShip::point_t, 3>& x : surr) {
+                                for(BattleShip::point_t y : x) {
+                                    for(int j = 0; j < TOTALARMYCOUNT; j++) {
+                                        if(_armies[j][player].get() && _armies[j][player]->getType() != BattleShip::support && _armies[j][player]->isDamaged() && _armies[j][player]->is_in_army(y)) {
+                                            _defenceGrids[player]->healShip(_armies[j][player]->getCenter(), _armies[j][player]->getDirection(), _armies[j][player]->getType());
+                                            _armies[j][player]->armor_restore();
+                                        }
                                     }
                                 }
                             }
+                            return true;
                         }
-                        return true;
+                        break;
                     }
-                break;
-                case BattleShip::submarine:
-                    if(_defenceGrids[player]->checkPosition(target, _armies[i][player]->getDirection(), BattleShip::submarine)) {
-                        _armies[i][player]->makeAction(target); 
-                        _attackGrids[player]->sonar(target, _defenceGrids[(player+1)%NPLAYER]->getSonarSurrounds(target));
-                        return true;
+                    case BattleShip::submarine: {
+                        if(_defenceGrids[player]->checkPosition(target, _armies[i][player]->getDirection(), BattleShip::submarine)) {
+                            //_armies[i][player]->makeAction(target); 
+                            _attackGrids[player]->sonar(target, _defenceGrids[(player+1)%NPLAYER]->getSonarSurrounds(target));
+                            return true;
+                        }
+                        break;
                     }
-                break;
-            } 
+                } 
+            }
         }
-        */
     }
     return false;
 }
