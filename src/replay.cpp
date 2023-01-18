@@ -11,7 +11,7 @@
 #define F_ARGUMENT "f"
 #define V_ARGUMENT "v"
 
-int main(int argc, char *argv[]){
+int main(int argc, char* argv[]){
     BattleShip::Prompt prompt;
     std::random_device rnd;
 	std::mt19937 rng(rnd());
@@ -26,14 +26,17 @@ int main(int argc, char *argv[]){
     myFile_pc.open("../logFiles/pcLogFile.txt");
     myFile_cc.open("../logFiles/ccLogFile.txt");
     myFile_output.open("../logFiles/replay_output.txt");
+    std::string file1 = "../logFiles/pcLogFile.txt";
+    std::string file2 = "../logFiles/ccLogFile.txt";
+    std::string file3 = "../logFiles/replay_output.txt";
     std::string s;
 
     if (argc == 1){                                                                             //There aren't arguments in command
         std::cout << "Nessun argomento fornito" << std::endl;
-    }else if (argc == 2 && argument == F_ARGUMENT || argc == 2 && argument == V_ARGUMENT) {     //Not specified files
+    }else if ((argc == 2 && argument == F_ARGUMENT) || (argc == 2 && argument == V_ARGUMENT)) {     //Not specified files
         std::cout << "Nessun file fornito" << std::endl;
     }else if(argc == 3 && argument == V_ARGUMENT){      //V ARGUMENT
-        if(argv[2] == "../logFiles/pcLogFile.txt"){             //Human vs Computer match    
+        if(file1.compare(argv[2]) == 0){             //Human vs Computer match    
             getline(myFile_pc, s);        //Reading line in file and copying it in a string variable
             
             if(s.substr(0,2) == "p1"){    //Checking which player starts  
@@ -65,7 +68,7 @@ int main(int argc, char *argv[]){
             }
         }
         
-        }else if(argv[2] == "../logFiles/ccLogFile.txt"){       //Computer vs Computer match
+        }else if(file2.compare(argv[2]) == 0){       //Computer vs Computer match
             getline(myFile_cc, s);
             if(s.substr(0,2) == "p1"){
                 startturn = 0;
@@ -84,7 +87,7 @@ int main(int argc, char *argv[]){
             myFile_cc.close();
         }
     }else if(argc == 4 && argument == F_ARGUMENT){  //F ARGUMENT
-        if(argv[2] == "../logFiles/ccLogFile.txt" && argv[3] == "../logFiles/replay_output.txt"){ 
+        if(file1.compare(argv[2]) == 0 && file3.compare(argv[3]) == 0){ 
             std::string line;
             getline(myFile_pc, line);
             myFile_output << line << "\n";
@@ -101,7 +104,7 @@ int main(int argc, char *argv[]){
             
             myFile_output.close();
 
-        }else if(argv[2] == "../logFiles/ccLogFile.txt" && argv[3] == "../logFiles/replay_output.txt"){
+        }else if(file2.compare(argv[2]) == 0 && file3.compare(argv[3]) == 0){
             std::string line;
             getline(myFile_cc, line);
             myFile_output << line << "\n";
@@ -122,4 +125,6 @@ int main(int argc, char *argv[]){
     }else{
         std::cout << "Comando non valido!" << std::endl;
     }
+
+    return 0;
 }
