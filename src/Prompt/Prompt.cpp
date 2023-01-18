@@ -3,6 +3,7 @@
 #include <string>
 #include <unistd.h>
 #include <iomanip>
+#include <thread>
 
 const std::string BattleShip::Prompt::_prompt = "\033[36;1m>\033[35;1m>\033[0m ";
 const std::string BattleShip::Prompt::_errorprompt = "\033[31;1m>>\033[0m ";
@@ -240,8 +241,7 @@ bool BattleShip::Prompt::setUpBoardHumanForReplay(const BattleShip::nplayer_t& p
                 _currSupport = _board.getCurrSupport(player);
                 _currSubmarine = _board.getCurrSubmarine(player);
                 std::cout << _board.getPlayerStringBoard(player) + '\n';
-                unsigned int microsecond = 1000000;
-                usleep(1 * microsecond);            //sleeps for 1 second
+                std::this_thread::sleep_for(std::chrono::seconds(1));          //sleeps for 1 second
             } catch(const std::invalid_argument& e) {
                 output << e.what() << ". Perfavore reinserire il comando\n" << _errorprompt;
             }
@@ -307,8 +307,7 @@ bool BattleShip::Prompt::setUpBoardBotForReplay(const BattleShip::nplayer_t& pla
             _currSupport = _board.getCurrSupport(player);
             _currSubmarine = _board.getCurrSubmarine(player);
             std::cout << _board.getPlayerStringBoard(player) + '\n';
-            unsigned int microsecond = 1000000;
-            usleep(1 * microsecond);            //sleeps for 1 second
+            std::this_thread::sleep_for(std::chrono::seconds(1));            //sleeps for 1 second
         } catch(const std::invalid_argument& e) {
         }
         output.str("");
@@ -462,8 +461,7 @@ bool BattleShip::Prompt::playGameForReplay(const BattleShip::nplayer_t& player1,
                         evalBot(s.substr(3, 4), BattleShip::nplayer_t((starter+1)%NPLAYER));
                         std::cout << output.str() << std::endl;
                         done = true;
-                        unsigned int microsecond = 1000000;
-                        usleep(1 * microsecond);            //sleeps for 1 second
+                        std::this_thread::sleep_for(std::chrono::seconds(1));        //sleeps for 1 second
                     } catch(const std::invalid_argument& e) {
                     }
                     output.str("");
