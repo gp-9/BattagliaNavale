@@ -18,7 +18,7 @@ int main (int argc, char *argv[]){
 	int startturn = randomturn(rng);
     std::string argument = argv[1];
     std::ifstream myFile_pc;
-    std::ofstream myFile_cc;
+    std::ifstream myFile_cc;
     std::ofstream myFile_output;
     bool exited = false;
 
@@ -46,10 +46,30 @@ int main (int argc, char *argv[]){
         
             myFile_pc.close();
         }else if(argv[2] == "../logFiles/ccLogFile.txt"){
-            //TODO
+            exited = prompt.setUpBoardBotForReplay(BattleShip::p1, myFile_cc); 
+
+            if(!exited) {
+                std::cout << "Aspettando che l'altro giocatore disponga le sue navi...\n";
+                prompt.setUpBoardBotForReplay(BattleShip::p2, myFile_cc);
+            }
+
+            while(!exited) {
+                //TODO
+                //exited = prompt.playGame(BattleShip::p1, BattleShip::human, BattleShip::p2, BattleShip::bot, startturn);
+            }
+        
+            myFile_pc.close();
         }
     }else if(argc == 4 && argument == F_ARGUMENT){
-
+        if(argv[2] == "../logFiles/ccLogFile.txt" && argv[3] == "../logFiles/replay_output.txt"){
+            std::string line;
+            getline(myFile_pc, line);
+            myFile_output << line;
+        }else if(argv[2] == "../logFiles/ccLogFile.txt" && argv[3] == "../logFiles/replay_output.txt"){
+            std::string line;
+            getline(myFile_cc, line);
+            myFile_output << line;
+        }else std::cout << "Comando non valido!";
     }else{
         std::cout << "Comando non valido!" << std::endl;
     }
