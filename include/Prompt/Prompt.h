@@ -35,10 +35,14 @@ class BattleShip::Prompt {
         Prompt();
         bool setUpBoardHuman(const BattleShip::nplayer_t& player, std::ofstream& myFile);
         bool setUpBoardHumanForReplay(const BattleShip::nplayer_t& player, std::ifstream& myFile);
+        bool setUpBoardHumanForReplayOut(const BattleShip::nplayer_t& player, std::ifstream& myFile, std::ofstream& myFile_out);
         bool setUpBoardBot(const BattleShip::nplayer_t& player, std::ofstream& myFile);
         bool setUpBoardBotForReplay(const BattleShip::nplayer_t& player, std::ifstream& myFile);
+        bool setUpBoardBotForReplayOut(const BattleShip::nplayer_t& player, std::ifstream& myFile, std::ofstream& myFile_out);
         bool playGameForReplay(const BattleShip::nplayer_t& player1, const BattleShip::player_t& player1type, const BattleShip::nplayer_t& player2, 
                 const BattleShip::player_t& player2type, int starter, int moves, std::ifstream& myFile);
+        bool playGameForReplayOut(const BattleShip::nplayer_t& player1, const BattleShip::player_t& player1type, const BattleShip::nplayer_t& player2, 
+                const BattleShip::player_t& player2type, int starter, int moves, std::ifstream& myFile, std::ofstream& myFile_out);
         void setUpGamePC(int starter);
         void setUpGameCC(int stater);
         bool makeTurnPC(int moves, std::ofstream& myFile);
