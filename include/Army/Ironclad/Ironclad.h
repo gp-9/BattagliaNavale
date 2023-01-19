@@ -3,7 +3,6 @@
 #include "../Army.h"
 #include <array>
 
-#define IRONCLADARMOR 5
 
 class BattleShip::Ironclad : public BattleShip::Army {
     protected:

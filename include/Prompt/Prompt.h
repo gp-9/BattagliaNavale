@@ -1,16 +1,20 @@
 #ifndef PROMPT_H_
 #define PROMPT_H_
 #include <chrono>
+#include <cmath>
 #include <ctime>
+#include <fstream>
+#include <iostream>
 #include <random>
 #include <string>
 #include <sstream>
-#include <iostream>
+#include <thread>
 #include "../BattleShip.h"
 #include "../Utils/Utils.h"
 #include "../Board/Board.h"
 
-struct ret { std::string output; bool done; };
+// Struct usato per ottenere l'effetto di una tupla
+struct ptuple { std::string output; bool done; };
 
 class BattleShip::Prompt {
     const static std::string _prompt;
@@ -28,7 +32,7 @@ class BattleShip::Prompt {
     BattleShip::Board _board {};
     inline void resetCount() { _currIronclad = _currSupport = _currSubmarine = 0; }
     std::string setupBoard(const std::string& input, const BattleShip::army_t& boat, const BattleShip::nplayer_t& player);
-    ret evalHuman(const std::string& input, const BattleShip::nplayer_t& player);
+    ptuple evalHuman(const std::string& input, const BattleShip::nplayer_t& player);
     void evalBot(const std::string& input, const BattleShip::nplayer_t& player);
 
     public:

@@ -1,9 +1,4 @@
 #include "../../include/Prompt/Prompt.h"
-#include <fstream>
-#include <string>
-#include <unistd.h>
-#include <iomanip>
-#include <thread>
 
 const std::string BattleShip::Prompt::_prompt = "\033[36;1m>\033[35;1m>\033[0m ";
 const std::string BattleShip::Prompt::_errorprompt = "\033[31;1m>>\033[0m ";
@@ -21,6 +16,29 @@ bool checkFirstElement(const std::string& input) {
 
 bool checkIsCommand(const std::vector<std::string>& input, const char c) {
     return input[0][0] == c && input[1][0] == c;
+}
+
+bool isValidSize(const BattleShip::point_t& head, const BattleShip::point_t& tail, const BattleShip::direction_t& direction, const BattleShip::army_t& army) {
+    switch(army) {
+        case BattleShip::ironclad:
+        {
+            if(direction == BattleShip::northsouth) return std::abs(head.xPos - tail.xPos) == 4;
+            else return std::abs(head.yPos - tail.yPos) == 4;
+            break;
+        }
+        case BattleShip::support:
+        {
+            if(direction == BattleShip::northsouth) return std::abs(head.xPos - tail.xPos) == 2;
+            else return std::abs(head.yPos - tail.yPos) == 2;
+            break;
+        }
+        case BattleShip::submarine:
+        {
+            if(direction == BattleShip::northsouth) return std::abs(head.xPos - tail.xPos) == 0;
+            else return std::abs(head.yPos - tail.yPos) == 0;
+            break;
+        }
+    }
 }
 
 std::string BattleShip::Prompt::setupBoard(const std::string& input, const BattleShip::army_t& boat, const BattleShip::nplayer_t& player) {
@@ -68,13 +86,13 @@ std::string BattleShip::Prompt::setupBoard(const std::string& input, const Battl
                     shipdir = BattleShip::eastwest;
                     center.xPos = tail.xPos;
                     center.yPos = tail.yPos - boat;
-                }
-                else if(head.yPos == tail.yPos) {
+                } else if(head.yPos == tail.yPos) {
                     shipdir = BattleShip::northsouth;
                     center.yPos = tail.yPos;
                     center.xPos = tail.xPos - boat;
 
                 } else throw std::invalid_argument("Direzione nave non valida");
+                if(!isValidSize(head, tail, shipdir, boat)) throw std::invalid_argument("Dimension non valida per il tipo di unità");
                 try {
                     _board.addArmy(player, center, shipdir, boat);
                 } catch(const std::invalid_argument& e) {
@@ -90,9 +108,9 @@ std::string BattleShip::Prompt::setupBoard(const std::string& input, const Battl
 }
 
 
-struct ret BattleShip::Prompt::evalHuman(const std::string& input, const BattleShip::nplayer_t& player) {
+struct ptuple BattleShip::Prompt::evalHuman(const std::string& input, const BattleShip::nplayer_t& player) {
     std::vector<std::string> tokens = Utils::split(Utils::trim(input), " ");
-    struct ret rettuple = { "", false };
+    struct ptuple rettuple = { "", false };
     if(tokens.size() != 2) throw std::invalid_argument("Comando non valido");
     BattleShip::point_t origin = {};
     BattleShip::point_t target = {};
@@ -413,7 +431,7 @@ bool BattleShip::Prompt::makeTurnPC(int moves, std::ofstream& myFile) {
                         return true;
                     } else {
                         try {
-                            struct ret rettuple = evalHuman(_line, BattleShip::nplayer_t(moves%NPLAYER));
+                            struct ptuple rettuple = evalHuman(_line, BattleShip::nplayer_t(moves%NPLAYER));
                             myFile << "p" << (moves%NPLAYER)+1 << ":" << _line << std::endl;
                             std::cout << rettuple.output << std::endl;
                             done = rettuple.done;
@@ -432,7 +450,7 @@ bool BattleShip::Prompt::makeTurnPC(int moves, std::ofstream& myFile) {
                     output << static_cast<char>(_randomletter(_rng)) << _randomnumber(_rng) << " " << static_cast<char>(_randomletter(_rng)) << _randomnumber(_rng);
                     try {
                         evalBot(output.str(), BattleShip::nplayer_t(moves%NPLAYER));
-                        std::cout << output.str();
+                        std::cout << output.str() << std::endl;
                         myFile << "p" << (moves%NPLAYER)+1 << ":" << output.str() << std::endl;
                         done = true;
                     } catch(const std::invalid_argument& e) {
@@ -442,8 +460,8 @@ bool BattleShip::Prompt::makeTurnPC(int moves, std::ofstream& myFile) {
                 break;
             }
         }
-        std::cout << std::endl << _board.getPlayerStringBoard(BattleShip::nplayer_t(moves%NPLAYER)) << std::endl;
-        std::cout << std::endl << _board.getPlayerStringBoard(BattleShip::nplayer_t((moves+1)%NPLAYER)) << std::endl;
+        std::cout << _board.getPlayerStringBoard(BattleShip::nplayer_t(moves%NPLAYER)) << std::endl;
+        std::cout << _board.getPlayerStringBoard(BattleShip::nplayer_t((moves+1)%NPLAYER)) << std::endl;
     }
     return false;
 }
@@ -491,7 +509,7 @@ bool BattleShip::Prompt::playGameForReplay(const BattleShip::nplayer_t& player1,
                     try {
                         char line1[5];
                         _line.copy(line1, 5, 3);
-                        struct ret rettuple = evalHuman(line1, BattleShip::nplayer_t(starter));
+                        struct ptuple rettuple = evalHuman(line1, BattleShip::nplayer_t(starter));
                         std::cout << rettuple.output << _prompt;
                     } catch(const std::invalid_argument& e) {
                         std::cout << e.what() << ". Perfavore reinserire il comando\n" << _errorprompt;
@@ -553,7 +571,7 @@ bool BattleShip::Prompt::playGameForReplayOut(const BattleShip::nplayer_t& playe
                     try {
                         char line1[5];
                         _line.copy(line1, 5, 3);
-                        struct ret rettuple = evalHuman(line1, BattleShip::nplayer_t(starter));
+                        struct ptuple rettuple = evalHuman(line1, BattleShip::nplayer_t(starter));
                     } catch(const std::invalid_argument& e) {
                     }
                 }

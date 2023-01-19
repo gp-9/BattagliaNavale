@@ -3,8 +3,6 @@
 #include <array>
 #include "../Army.h"
 
-#define SUPPORTARMOR 3
-
 class BattleShip::Support : public BattleShip::Army {
     protected:
         std::array<BattleShip::point_t, SUPPORTSIZE> coords_position;

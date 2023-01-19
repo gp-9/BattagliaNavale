@@ -13,9 +13,6 @@
 #include "Grid/AttackGrid/AttackGrid.h"
 #include "Grid/DefenceGrid/DefenceGrid.h"
 
-#define SPACESIZE 10
-#define TOTALARMYCOUNT (IRONCLAD + SUPPORT + SUBMARINE)
-
 class BattleShip::Board {
     // Si usa il numer del giocatore per determinare l'offset e quindi a chi appartiene la board voluta
     std::array<std::unique_ptr<BattleShip::DefenceGrid>, NPLAYER> _defenceGrids = {nullptr};
