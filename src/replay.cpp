@@ -27,7 +27,7 @@ int main (int argc, char *argv[]){
     std::string s;
     if (argc == 1){
         std::cout << "Nessun argomento fornito" << std::endl;
-    }else if ((argc == 2 && argv[1] == "v" ) || (argc == 2 && argv[1] == "f")) {
+    }else if ((argc == 2 && std::string(argv[1]) == "v" ) || (argc == 2 && std::string(argv[1]) == "f")) {
         std::cout << "Nessun file fornito" << std::endl;
     }else if(argc == 3 && std::string(argv[1]) == "v"){
         if(std::string(argv[2]) == "./logFiles/pcLogFile.txt"){
@@ -71,6 +71,7 @@ int main (int argc, char *argv[]){
             }else startturn = 1;
 
             myFile_cc_write.seekg(0);
+
             BattleShip::nplayer_t player1 = BattleShip::nplayer_t(startturn);
             BattleShip::nplayer_t player2 = BattleShip::nplayer_t((startturn+1)%NPLAYER);
             prompt.setUpBoardBotForReplay(player1, myFile_cc_write);

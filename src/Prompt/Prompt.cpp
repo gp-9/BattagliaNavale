@@ -264,8 +264,8 @@ bool BattleShip::Prompt::setUpBoardHumanForReplay(const BattleShip::nplayer_t& p
         } else {
             std::cout << _line << std::endl;
             try {   
-                char line1[5];
-                _line.copy(line1, 5, 3);
+                char line1[_line.length()-3];
+                _line.copy(line1, _line.length()-3, 3);
                 output << setupBoard(line1, boat, player) << _prompt;
                 _currIronclad = _board.getCurrIronclad(player);
                 _currSupport = _board.getCurrSupport(player);
@@ -305,8 +305,8 @@ bool BattleShip::Prompt::setUpBoardHumanForReplayOut(const BattleShip::nplayer_t
         } else {
             //std::cout << _line << std::endl;
             try {   
-                char line1[5];
-                _line.copy(line1, 5, 3);
+                char line1[_line.length()-3];
+                _line.copy(line1, _line.length()-3, 3);
                 setupBoard(line1, boat, player);
                 myFile_out << _line << "\n";
                 _currIronclad = _board.getCurrIronclad(player);
@@ -352,6 +352,7 @@ bool BattleShip::Prompt::setUpBoardBot(const BattleShip::nplayer_t& player, std:
 }
 
 bool BattleShip::Prompt::setUpBoardBotForReplay(const BattleShip::nplayer_t& player, std::ifstream& myFile) {
+    int count = 0;
     while(!_board.isPlayerSetup(player)) {
         BattleShip::army_t boat;
         if(_currIronclad < IRONCLAD) {
@@ -363,17 +364,20 @@ bool BattleShip::Prompt::setUpBoardBotForReplay(const BattleShip::nplayer_t& pla
         }
         try {   
             std::string line;
-            char line1[5];
             getline(myFile, line);
-            line.copy(line1, 5, 3);
-
+            char line1[line.length()-3];
+            line.copy(line1, line.length()-3, 3);
             setupBoard(line1, boat, player);
             _currIronclad = _board.getCurrIronclad(player);
             _currSupport = _board.getCurrSupport(player);
             _currSubmarine = _board.getCurrSubmarine(player);
+            std::cout << line << std::endl;
+            std::cout << _board.getPlayerStringBoard(player) << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
 
         } catch(const std::invalid_argument& e) {
         }
+        count++;
     }
     resetCount();
     return false;
@@ -392,9 +396,10 @@ bool BattleShip::Prompt::setUpBoardBotForReplayOut(const BattleShip::nplayer_t& 
         }
         try {   
             std::string line;
-            char line1[5];
+            
             getline(myFile, line);
-            line.copy(line1, 5, 3);
+            char line1[line.length()-3];
+            line.copy(line1, line.length()-3, 3);
             myFile_out << line << "\n";
             setupBoard(line1, boat, player);
             _currIronclad = _board.getCurrIronclad(player);
@@ -507,8 +512,8 @@ bool BattleShip::Prompt::playGameForReplay(const BattleShip::nplayer_t& player1,
                     return true;
                 } else {
                     try {
-                        char line1[5];
-                        _line.copy(line1, 5, 3);
+                        char line1[_line.length()-3];
+                        _line.copy(line1, _line.length()-3, 3);
                         struct ptuple rettuple = evalHuman(line1, BattleShip::nplayer_t(starter));
                         std::cout << rettuple.output << _prompt;
                     } catch(const std::invalid_argument& e) {
@@ -522,13 +527,12 @@ bool BattleShip::Prompt::playGameForReplay(const BattleShip::nplayer_t& player1,
                 std::cout << _line << std::endl;
                 bool done = false;
                 while(!done) {
-                    std::string s;
-                    getline(myFile, s);
                     try {
                         std::string line;
-                        char line1[5];
+                        
                         getline(myFile, line);
-                        _line.copy(line1, 5, 3);
+                        char line1[line.length()-3];
+                         line.copy(line1, line.length()-3, 3);
                         evalBot(line1, BattleShip::nplayer_t((starter+1)%NPLAYER));
                         std::cout << output.str() << std::endl;
                         done = true;
@@ -569,8 +573,8 @@ bool BattleShip::Prompt::playGameForReplayOut(const BattleShip::nplayer_t& playe
                 } else {
                     myFile_out << _line << std::endl;
                     try {
-                        char line1[5];
-                        _line.copy(line1, 5, 3);
+                        char line1[_line.length()-3];
+                        _line.copy(line1, _line.length()-3, 3);
                         struct ptuple rettuple = evalHuman(line1, BattleShip::nplayer_t(starter));
                     } catch(const std::invalid_argument& e) {
                     }
@@ -586,10 +590,8 @@ bool BattleShip::Prompt::playGameForReplayOut(const BattleShip::nplayer_t& playe
                     getline(myFile, s);
                     myFile_out << s << std::endl;
                     try {
-                        std::string line;
-                        char line1[5];
-                        getline(myFile, line);
-                        _line.copy(line1, 5, 3);
+                        char line1[s.length()-3];
+                        s.copy(line1, s.length()-3, 3);
                         evalBot(line1, BattleShip::nplayer_t((starter+1)%NPLAYER));
                         myFile_out << s << std::endl;
                         done = true;
