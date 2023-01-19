@@ -2,8 +2,6 @@
 #define SUBMARINE_H_
 #include "../Army.h"
 
-#define SUBMARINEARMOR 1
-
 class BattleShip::Submarine : public BattleShip::Army {
     public:
         Submarine(const BattleShip::point_t& center, const BattleShip::direction_t& direction);

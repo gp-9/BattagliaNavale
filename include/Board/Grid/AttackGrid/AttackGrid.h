@@ -2,10 +2,6 @@
 #define ATTACKGRID_H_
 #include "../Grid.h"
 
-#define HIT 'X'
-#define MISS 'O'
-#define DISCOVERED 'Y'
-
 class BattleShip::AttackGrid : public BattleShip::Grid {
     public:
         AttackGrid();

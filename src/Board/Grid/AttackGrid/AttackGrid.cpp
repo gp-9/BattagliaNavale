@@ -1,4 +1,5 @@
 #include "../../../../include/Board/Grid/AttackGrid/AttackGrid.h"
+#include <iostream>
 
 BattleShip::AttackGrid::AttackGrid() : BattleShip::Grid::Grid() {}
 
@@ -11,9 +12,9 @@ bool BattleShip::AttackGrid::hitPosition(const BattleShip::point_t& target, cons
 }
 
 void BattleShip::AttackGrid::sonar(const BattleShip::point_t& target, const std::array<std::array<char, 5>, 5>& surrounds) {
-    for(int x = -2; x < 3; x++) {
-        for(int y = -2; y < 3; y++) {
-            if(surrounds[x][y]) Grid::modifyGrid({target.xPos + x, target.yPos + y}, DISCOVERED);
+    for(int x = 0; x < 5; x++) {
+        for(int y = 0; y < 5; y++) {
+            if(surrounds[x][y]) Grid::modifyGrid({target.xPos + x - 2, target.yPos + y - 2}, DISCOVERED);
         }
     }
 }
